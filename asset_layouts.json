@@ -1,0 +1,103 @@
+[
+    {
+        "name":"Location",
+        "icon":"fas fa-map-marker-alt",
+        "color":"#000000",
+        "icon_color":"#000000",
+        "fields":[
+            {
+                "label":"Street_Address",
+                "field_type":"Text",
+                "position": 1,
+                "show_in_list": "true"
+            },
+            {
+                "label":"City",
+                "field_type":"Text",
+                "position": 2,
+                "show_in_list": "true"
+            },
+            {
+                "label":"State",
+                "field_type":"Dropdown",
+                "position": 3,
+                "options": [
+                    "GA",
+                    "AL",
+                    "SC",
+                    "TN",
+                    "FL"
+                ],
+                "show_in_list": "true"
+            },
+            {
+                "label":"Zip",
+                "field_type":"Number",
+                "position": 4
+            },
+            {
+                "label":"Primary_Phone",
+                "field_type":"Phone",
+                "position": 5,
+                "show_in_list": "true"
+            }
+        ]
+    },
+    {
+        "name":"Computer",
+        "icon":"far fa-computer-classic",
+        "color":"#000000",
+        "icon_color":"#000000",
+        "fields":[
+            {
+                "label":"Location",
+                "field_type":"AssetLink",
+                "linkable_id":31,
+                "position": 1,
+                "show_in_list": "true"
+            },
+            {
+                "label":"Serial",
+                "field_type":"Text",
+                "position": 2
+            },
+            {
+                "label":"IP",
+                "field_type":"Text",
+                "position": 3
+            },
+            {
+                "label":"Make",
+                "field_type":"Dropdown",
+                "options": [
+                    "Dell",
+                    "Lenovo",
+                    "HP",
+                    "MSI",
+                    "Other/Whitebox"
+                ],
+                "position": 4,
+                "show_in_list": "true"
+            },
+            {
+                "label":"Model",
+                "field_type":"Text",
+                "position": 5,
+                "show_in_list": "true"
+            },
+            {
+                "label":"isLaptop",
+                "field_type":"CheckBox",
+                "position": 6,
+                "show_in_list": "true"
+            },
+            {
+                "label":"isVM",
+                "field_type":"CheckBox",
+                "position": 7,
+                "show_in_list": "true"
+            }
+
+        ]
+    }
+]
