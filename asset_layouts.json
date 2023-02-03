@@ -52,7 +52,7 @@
             {
                 "label":"Location",
                 "field_type":"AssetLink",
-                "linkable_id":31,
+                "linkable_id":"Location",
                 "position": 1,
                 "show_in_list": "true"
             },
