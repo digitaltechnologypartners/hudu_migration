@@ -25,14 +25,11 @@ for layout in layouts:
     fields = data['asset_layout']['fields']
     for field in fields:
         if field['field_type'] == 'AssetLink':
-            linked_field = field['linkable_id']
             r = requests.get(url, headers=headers)
-            existing_layouts = r.json()
-            existing_layouts = existing_layouts['asset_layouts']
+            existing_layouts = r.json()['asset_layouts']
             for layout in existing_layouts:
-                if layout['name'] == linked_field:
-                    linked_field_id = layout['id']
-                    data['asset_layout']['fields'][fields.index(field)]['linkable_id'] = linked_field_id
+                if layout['name'] == field['linkable_id']:
+                    data['asset_layout']['fields'][fields.index(field)]['linkable_id'] = layout['id']
 
     r = requests.post(url, headers=headers, json=data)
     print(r.status_code)
