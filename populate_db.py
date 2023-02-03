@@ -10,10 +10,10 @@ GLUE_EXPT_PATH = os.getenv('GLUE_EXPT_PATH')
 
 for file in os.listdir(GLUE_EXPT_PATH):
     if file.endswith(".csv"):
-        csv = pd.read_csv(open(GLUE_EXPT_PATH + '/' + file))
+        df = pd.read_csv(open(GLUE_EXPT_PATH + '/' + file))
         tablename = os.path.splitext(file)[0]
         engine = create_engine(DB_CON_STR)
-        con = engine.connect()
-        csv.to_sql(tablename,con,if_exists='replace')
+        connection = engine.connect().execution_options(isolation_level="AUTOCOMMIT")
+        df.to_sql(tablename,con=connection,if_exists='replace',index=False)
         print(file + ' OK')
 
