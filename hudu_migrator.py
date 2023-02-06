@@ -1,5 +1,5 @@
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 import os
 from dotenv import load_dotenv
 import requests
@@ -58,7 +58,7 @@ def createcompanies():
     endpoint = 'companies'
     url = os.path.join(BASE_URL, endpoint)
 
-    query = 'SELECT * FROM organizations'
+    query = text('SELECT * FROM organizations')
     connection = getExportDB()
     organizations = pd.read_sql(query,con=connection)
     companies = []
