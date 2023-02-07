@@ -65,20 +65,21 @@ def createcompanies():
     companies = []
 
     for org in organizations:
-        company = {}
-        company['name'] = org['name']
-        company['type'] = org['organization_type']
-        company['id_number'] = org['short_name']
-        company['notes'] = org['quick_notes']
-        companies.append(company)
+        print(org)
+    #     company = {}
+    #     company['name'] = org['name']
+    #     company['type'] = org['organization_type']
+    #     company['id_number'] = org['short_name']
+    #     company['notes'] = org['quick_notes']
+    #     companies.append(company)
 
-    for company in companies:
-        data = {
-            "company": company
-        }
+    # for company in companies:
+    #     data = {
+    #         "company": company
+    #     }
 
-    r = requests.post(url, headers=headers, json=data)
-    print(company['name'] + ' ' + r.status_code + ' ' + r.reason)
+    # r = requests.post(url, headers=headers, json=data)
+    # print(company['name'] + ' ' + r.status_code + ' ' + r.reason)
 
 
 
