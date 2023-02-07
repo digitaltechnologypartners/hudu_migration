@@ -61,7 +61,7 @@ def createcompanies():
     query = text('SELECT * FROM organizations;')
     connection = getExportDB()
     organizations = pd.read_sql(query,con=connection)
-    organizations = pd.to_json(orient = 'records')
+    organizations = organizations.to_json(orient = 'records')
     companies = []
 
     for org in organizations:
