@@ -58,7 +58,7 @@ def createcompanies():
     endpoint = 'companies'
     url = os.path.join(BASE_URL, endpoint)
 
-    query = text('SELECT * FROM organizations')
+    query = text('SELECT * FROM organizations;')
     connection = getExportDB()
     organizations = pd.read_sql(query,con=connection)
     companies = []
@@ -88,7 +88,7 @@ while command not in ['quit','exit','stop']:
     if command == 'help':
         print("> loaddb - Loads the database")
         print("> createlayouts - creates asset layouts")
-        print("createcompanies  - creates companies")
+        print("> createcompanies  - creates companies")
     if command == 'loaddb':
         loaddb()
     if command == 'createlayouts':
