@@ -61,14 +61,15 @@ def createcompanies():
     query = text('SELECT * FROM organizations;')
     connection = getExportDB()
     organizations = pd.read_sql(query,con=connection)
+    organizations = pd.to_json(orient = 'records')
     companies = []
 
-    for org in organizations.iterrows():
+    for org in organizations:
         company = {}
         company['name'] = org['name']
         company['type'] = org['organization_type']
         company['id_number'] = org['short_name']
-        company['notes'] = org ['quick_notes']
+        company['notes'] = org['quick_notes']
         companies.append(company)
 
     for company in companies:
