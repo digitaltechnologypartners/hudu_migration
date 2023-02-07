@@ -7,10 +7,6 @@ Scripts and resources related to DTP migration from ITGlue to Hudu - 2023
 * activate venv 
 * install requirements.txt
 
-## Hello world
-* Basic script which gets the 'api_info' endpoint and prints the text to the console
-* demonstrates basic usage/authentication of the hudu api in python
-
 ## Asset_layouts.json
 * json file which defines the asset layouts that will be written to hudu
 * see documentation for available options: https://hudu.dtpartners.com/developer/1.0/asset_layouts/create.html
@@ -40,4 +36,16 @@ Scripts and resources related to DTP migration from ITGlue to Hudu - 2023
     }
 ]
 
+```
+
+## hudu_migrator.py
+This is the main program. It runs as a console application. From the context of the parent folder containing it, run `python hudu_migrator.py`. You will then be greeted with a prompt to enter a command. Type `help` to see available commands. It can be ended with `quit`, `stop`, `exit` or `ctrl-c`. Currently it contains functions to load the export glue export db, create asset layouts based on asset_layouts.json and create companies. There is no custom error handling or logging at this time.
+
+## .env
+The env file must be populated appropriately before any of the commands can be run.
+```
+API_KEY = "apikey"
+BASE_URL = "https://[our domain].com/api/v1/"
+DB_CON_STR = "mysql+pymysql://username:password@localhost:3306/dbname?charset=utf8mb4"
+GLUE_EXPT_PATH = "./path/to/export"
 ```
