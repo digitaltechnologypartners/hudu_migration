@@ -79,7 +79,7 @@ def createcompanies():
         }
 
     r = requests.post(url, headers=headers, json=data)
-    print(company['name'] + ' ' + r.status_code + ' ' + r.reason)
+    print(company['name'] + ' ' + str(r.status_code) + ' ' + r.reason)
 
 
 
