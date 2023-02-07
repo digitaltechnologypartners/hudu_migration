@@ -68,7 +68,7 @@ def createcompanies():
     for org in organizations:
         company = {}
         company['name'] = org['name']
-        company['type'] = org['organization_type']
+        company['company_type'] = org['organization_type']
         company['id_number'] = org['short_name']
         company['notes'] = org['quick_notes']
         companies.append(company)
@@ -80,8 +80,6 @@ def createcompanies():
 
         r = requests.post(url, headers=headers, json=data)
         print(company['name'] + ' ' + str(r.status_code) + ' ' + r.reason)
-
-
 
 command = ""
 while command not in ['quit','exit','stop']:
