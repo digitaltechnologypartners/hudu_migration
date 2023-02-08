@@ -127,8 +127,7 @@ def createcompanies(source = ""):
         company['phone_number'] = org['phone']
         company['fax_number'] = org['fax']
         companies.append(company)
-
-
+        
     existingCompanies = getExistingCompanies()
 
     for company in companies:
