@@ -81,17 +81,30 @@ def createcompanies():
         r = requests.post(url, headers=headers, json=data)
         print(company['name'] + ' ' + str(r.status_code) + ' ' + r.reason)
 
+def appHeader():
+    os.system('cls')
+    print('# Welcome to Hudu Migrator')
+    print('# Enter help to see a list of available commands')
+
+appHeader()
 command = ""
 while command not in ['quit','exit','stop']:
-    print('> Enter a command')
-    command = input()
+    command = input('> ')
     if command == 'help':
-        print("> loaddb - Loads the database")
-        print("> createlayouts - creates asset layouts")
-        print("> createcompanies  - creates companies")
-    if command == 'loaddb':
+        print("# clear - Clear the screen")
+        print("# loaddb - Load the ITGlue export database with CSV files found in the path set as the Glue Export Path")
+        print("# crlayouts - Create asset layouts based on the contents of asset_layouts.json")
+        print("# crcompanies  - Create companies based on ")
+    elif command == 'clear':
+        appHeader()
+    elif command == 'loaddb':
         loaddb()
-    if command == 'createlayouts':
+    elif command == 'crlayouts':
         createlayouts()
-    if command == 'createcompanies':
+    elif command == 'crcompanies':
         createcompanies()
+    elif command in ['quit','exit','stop']:
+        print("# Goodbye")
+    else:
+        print("# Not a valid command")
+        print("# Enter help to see a list of available commands")
