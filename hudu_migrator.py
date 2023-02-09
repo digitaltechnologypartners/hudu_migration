@@ -7,8 +7,8 @@ import json
 import logging
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='migrator.log', filemode='w', level=logging.INFO, \
-    format='%(asctime)s:%(levelname)s:%(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
+logging.basicConfig(filename='migrator.log', filemode='a', level=logging.INFO, \
+    format='%(asctime)s : %(levelname)s : %(message)s : ', datefmt='%m/%d/%Y %I:%M:%S %p')
 
 load_dotenv()
 
@@ -41,7 +41,7 @@ def loadExpDb():
             df.to_sql(tablename,con=connection,if_exists='replace',index=False)
             print(file + ' OK')
 
-def getExistingRecords(endpoint):
+def getExistingRecords(endpoint, namesonly=False):
     endpointpage = endpoint + '?page='
     records = []
     recordsResultsCount = 25
@@ -49,11 +49,14 @@ def getExistingRecords(endpoint):
     while recordsResultsCount == 25:
         url = BASE_URL + endpointpage + str(pagenum)
         r = requests.get(url,headers=headers)
-        existing_records = r.json()['endpoint']
+        existing_records = r.json()[endpoint]
         pagenum += 1
         recordsResultsCount = len(existing_records)
         for record in existing_records:
-            records.append(record)
+            if namesonly == True:
+                records.append(record['name'])
+            else:
+                records.append(record)
     return records
 
 def createlayouts():
@@ -63,22 +66,26 @@ def createlayouts():
     file = open('asset_layouts.json')
     layouts = json.load(file)
     for layout in layouts:
-        data = {
-            "asset_layout": layout
-        }
+        existingLayouts = getExistingRecords(endpoint, namesonly=True)
+        if layout['name'] not in existingLayouts:
+            data = {
+                "asset_layout": layout
+            }
 
-        fields = data['asset_layout']['fields']
-        for field in fields:
-            if field['field_type'] == 'AssetTag':
-                r = requests.get(url, headers=headers)
-                existing_layouts = r.json()['asset_layouts']
-                for layout in existing_layouts:
-                    if layout['name'] == field['linkable_id']:
-                        data['asset_layout']['fields'][fields.index(field)]['linkable_id'] = layout['id']
+            fields = data['asset_layout']['fields']
+            for field in fields:
+                if field['field_type'] == 'AssetTag':
+                    existing_Layouts = getExistingRecords(endpoint)
+                    for existing_Layout in existing_Layouts:
+                        if existing_Layout['name'] == field['linkable_id']:
+                            data['asset_layout']['fields'][fields.index(field)]['linkable_id'] = existing_Layout['id']
 
-        r = requests.post(url, headers=headers, json=data)
-        print(r.status_code)
-        print(r.reason)
+            r = requests.post(url, headers=headers, json=data)
+            print(layout['name'] + ' ' + str(r.status_code) + ' ' + r.reason)
+            if r.status_code != 200:
+                logging.error(layout['name'] + ' creation failed: ' + r.reason + '\n' + json.dumps(layout, indent=4))
+        else:
+            print(layout['name'] + ' already exists.')
 
 def createcompanies(source = ""):
     endpoint = 'companies'
@@ -128,9 +135,8 @@ def createcompanies(source = ""):
         company['fax_number'] = org['fax']
         companies.append(company)
         
-    existingCompanies = getExistingRecords(endpoint)
-
     for company in companies:
+        existingCompanies = getExistingRecords(endpoint, namesonly=True)
         if company['name'] not in existingCompanies:
             data = {
                 "company": company
@@ -138,11 +144,7 @@ def createcompanies(source = ""):
             r = requests.post(url, headers=headers, json=data)
             print(company['name'] + ' ' + str(r.status_code) + ' ' + r.reason)
             if r.status_code != 200:
-                companyString = '{\n'
-                for item in company:
-                    companyString += '    "' + item + '":"' + str(company[item]) + '",\n'
-                companyString += '}'
-                logging.error(company['name'] + ' creation failed: ' + r.reason + '\n' + companyString)
+                logging.error(company['name'] + ' creation failed: ' + r.reason + '\n' + json.dumps(company, indent=4))
         else:
             print(company['name'] + ' already exists.')
 
