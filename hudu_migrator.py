@@ -69,7 +69,7 @@ def createlayouts():
 
         fields = data['asset_layout']['fields']
         for field in fields:
-            if field['field_type'] == 'AssetLink':
+            if field['field_type'] == 'AssetTag':
                 r = requests.get(url, headers=headers)
                 existing_layouts = r.json()['asset_layouts']
                 for layout in existing_layouts:
