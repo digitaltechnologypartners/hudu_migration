@@ -44,6 +44,69 @@
         ]
     },
     {
+        "name":"Server",
+        "icon":"far fa-server",
+        "color":"#000000",
+        "icon_color":"#000000",
+        "fields":[
+            {
+                "label":"Location",
+                "field_type":"AssetLink",
+                "linkable_id":"Location",
+                "position": 1,
+                "show_in_list": "true"
+            },
+            {
+                "label":"Serial",
+                "field_type":"Text",
+                "position": 2
+            },
+            {
+                "label":"IP",
+                "field_type":"Text",
+                "position": 3
+            },
+            {
+                "label":"Make",
+                "field_type":"Dropdown",
+                "options": [
+                    "Dell",
+                    "Lenovo",
+                    "HP",
+                    "Other/Whitebox"
+                ],
+                "position": 4,
+                "show_in_list": "true"
+            },
+            {
+                "label":"Model",
+                "field_type":"Text",
+                "position": 5,
+                "show_in_list": "true"
+            },
+            {
+                "label":"isVM",
+                "field_type":"CheckBox",
+                "position": 6,
+                "show_in_list": "true"
+            },
+            {
+                "label":"isHypervisor",
+                "field_type":"CheckBox",
+                "position": 7,
+                "show_in_list": "true"
+            },
+            {
+                "label":"VM Host",
+                "field_type":"AssetLink",
+                "linkable_id":"Server",
+                "position": 1,
+                "show_in_list": "true",
+                "hint": "If this is a VM, this is its Hypervisor"
+            }
+        ]
+    },
+    {
         "name":"Computer",
         "icon":"far fa-computer-classic",
         "color":"#000000",
@@ -96,8 +159,78 @@
                 "field_type":"CheckBox",
                 "position": 7,
                 "show_in_list": "true"
+            },
+            {
+                "label":"VM Host",
+                "field_type":"AssetLink",
+                "linkable_id":"Server",
+                "position": 8,
+                "show_in_list": "true",
+                "hint": "If this is a VM, this is its Hypervisor"
             }
-
+        ]
+    },
+    {
+        "name":"Router/Firewall",
+        "icon":"far fa-block-brick-fire",
+        "color":"#000000",
+        "icon_color":"#000000",
+        "fields":[
+            {
+                "label":"Location",
+                "field_type":"AssetLink",
+                "linkable_id":"Location",
+                "position": 1,
+                "show_in_list": "true"
+            },
+            {
+                "label":"Serial",
+                "field_type":"Text",
+                "position": 2
+            },
+            {
+                "label":"IP",
+                "field_type":"Text",
+                "position": 3
+            },
+            {
+                "label":"Make",
+                "field_type":"Dropdown",
+                "options": [
+                    "Dell",
+                    "Lenovo",
+                    "HP",
+                    "Other/Whitebox"
+                ],
+                "position": 4,
+                "show_in_list": "true"
+            },
+            {
+                "label":"Model",
+                "field_type":"Text",
+                "position": 5,
+                "show_in_list": "true"
+            },
+            {
+                "label":"isVM",
+                "field_type":"CheckBox",
+                "position": 6,
+                "show_in_list": "true"
+            },
+            {
+                "label":"isHypervisor",
+                "field_type":"CheckBox",
+                "position": 7,
+                "show_in_list": "true"
+            },
+            {
+                "label":"VM Host",
+                "field_type":"AssetLink",
+                "linkable_id":"Server",
+                "position": 8,
+                "show_in_list": "true",
+                "hint": "If this is a VM, this is its Hypervisor"
+            }
         ]
     }
 ]
