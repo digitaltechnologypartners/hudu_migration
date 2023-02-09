@@ -41,6 +41,21 @@ def loadExpDb():
             df.to_sql(tablename,con=connection,if_exists='replace',index=False)
             print(file + ' OK')
 
+def getExistingRecords(endpoint):
+    endpointpage = endpoint + '?page='
+    records = []
+    recordsResultsCount = 25
+    pagenum = 1
+    while recordsResultsCount == 25:
+        url = BASE_URL + endpointpage + str(pagenum)
+        r = requests.get(url,headers=headers)
+        existing_records = r.json()['endpoint']
+        pagenum += 1
+        recordsResultsCount = len(existing_records)
+        for record in existing_records:
+            records.append(record)
+    return records
+
 def createlayouts():
     endpoint = 'asset_layouts'
     url = os.path.join(BASE_URL, endpoint)
@@ -64,21 +79,6 @@ def createlayouts():
         r = requests.post(url, headers=headers, json=data)
         print(r.status_code)
         print(r.reason)
-
-def getExistingCompanies():
-    endpoint = 'companies?page='
-    companies = []
-    companiesResultsCount = 25
-    pagenum = 1
-    while companiesResultsCount == 25:
-        url = BASE_URL + endpoint + str(pagenum)
-        r = requests.get(url,headers=headers)
-        existing_companies = r.json()['companies']
-        pagenum += 1
-        companiesResultsCount = len(existing_companies)
-        for company in existing_companies:
-            companies.append(company['name'])
-    return companies
 
 def createcompanies(source = ""):
     endpoint = 'companies'
@@ -128,7 +128,7 @@ def createcompanies(source = ""):
         company['fax_number'] = org['fax']
         companies.append(company)
         
-    existingCompanies = getExistingCompanies()
+    existingCompanies = getExistingRecords(endpoint)
 
     for company in companies:
         if company['name'] not in existingCompanies:
