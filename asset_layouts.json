@@ -51,7 +51,7 @@
         "fields":[
             {
                 "label":"Location",
-                "field_type":"AssetLink",
+                "field_type":"AssetTag",
                 "linkable_id":"Location",
                 "position": 1,
                 "show_in_list": "true"
@@ -98,7 +98,7 @@
             },
             {
                 "label":"VM Host",
-                "field_type":"AssetLink",
+                "field_type":"AssetTag",
                 "linkable_id":"Server",
                 "position": 1,
                 "show_in_list": "true",
@@ -114,7 +114,7 @@
         "fields":[
             {
                 "label":"Location",
-                "field_type":"AssetLink",
+                "field_type":"AssetTag",
                 "linkable_id":"Location",
                 "position": 1,
                 "show_in_list": "true"
@@ -162,7 +162,7 @@
             },
             {
                 "label":"VM Host",
-                "field_type":"AssetLink",
+                "field_type":"AssetTag",
                 "linkable_id":"Server",
                 "position": 8,
                 "show_in_list": "true",
@@ -178,7 +178,7 @@
         "fields":[
             {
                 "label":"Location",
-                "field_type":"AssetLink",
+                "field_type":"AssetTag",
                 "linkable_id":"Location",
                 "position": 1,
                 "show_in_list": "true"
@@ -225,7 +225,7 @@
             },
             {
                 "label":"VM Host",
-                "field_type":"AssetLink",
+                "field_type":"AssetTag",
                 "linkable_id":"Server",
                 "position": 8,
                 "show_in_list": "true",
