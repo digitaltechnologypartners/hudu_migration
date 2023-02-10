@@ -4,6 +4,7 @@
         "icon":"fas fa-map-marker-alt",
         "color":"#000000",
         "icon_color":"#FFFFFF",
+        "active":true,
         "fields":[
             {
                 "label":"Street_Address",
@@ -21,13 +22,7 @@
                 "label":"State",
                 "field_type":"Dropdown",
                 "position": 3,
-                "options": [
-                    "GA",
-                    "AL",
-                    "SC",
-                    "TN",
-                    "FL"
-                ],
+                "options": "GA\r\nAL\r\nSC\r\nTN\r\nFL",
                 "show_in_list": "true"
             },
             {
@@ -48,6 +43,7 @@
         "icon":"far fa-server",
         "color":"#000000",
         "icon_color":"#FFFFFF",
+        "active":true,
         "fields":[
             {
                 "label":"Location",
@@ -69,12 +65,7 @@
             {
                 "label":"Make",
                 "field_type":"Dropdown",
-                "options": [
-                    "Dell",
-                    "Lenovo",
-                    "HP",
-                    "Other/Whitebox"
-                ],
+                "options": "Dell\r\nLenovo\r\nHP\r\nOther/Whitebox",
                 "position": 4,
                 "show_in_list": "true"
             },
@@ -100,7 +91,7 @@
                 "label":"VM Host",
                 "field_type":"AssetTag",
                 "linkable_id":"Server",
-                "position": 1,
+                "position": 8,
                 "show_in_list": "true",
                 "hint": "If this is a VM, this is its Hypervisor"
             }
@@ -111,6 +102,7 @@
         "icon":"far fa-computer-classic",
         "color":"#000000",
         "icon_color":"#FFFFFF",
+        "active":true,
         "fields":[
             {
                 "label":"Location",
@@ -132,13 +124,7 @@
             {
                 "label":"Make",
                 "field_type":"Dropdown",
-                "options": [
-                    "Dell",
-                    "Lenovo",
-                    "HP",
-                    "MSI",
-                    "Other/Whitebox"
-                ],
+                "options": "Dell\r\nLenovo\r\nHP\r\nMSI\r\nOther/Whitebox",
                 "position": 4,
                 "show_in_list": "true"
             },
@@ -175,6 +161,7 @@
         "icon":"far fa-block-brick-fire",
         "color":"#000000",
         "icon_color":"#FFFFFF",
+        "active":true,
         "fields":[
             {
                 "label":"Location",
@@ -196,12 +183,7 @@
             {
                 "label":"Make",
                 "field_type":"Dropdown",
-                "options": [
-                    "Dell",
-                    "Lenovo",
-                    "HP",
-                    "Other/Whitebox"
-                ],
+                "options": "OPNSense\r\nUntangle\r\nSophos\r\nSonicWall\r\nOther",
                 "position": 4,
                 "show_in_list": "true"
             },

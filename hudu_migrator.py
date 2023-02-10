@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import requests
 import json
 import logging
+import copy
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename='migrator.log', filemode='a', level=logging.INFO, \
@@ -59,33 +60,63 @@ def getExistingRecords(endpoint, namesonly=False):
                 records.append(record)
     return records
 
+def getLayoutLinkRefs(layout, field):
+    existingLayouts = getExistingRecords('asset_layouts')
+    for existingLayout in existingLayouts:
+        if existingLayout['name'] == field['linkable_id']:
+            layout['fields'][layout['fields'].index(field)]['linkable_id'] = existingLayout['id']
+    return layout
+
 def createlayouts():
     endpoint = 'asset_layouts'
     url = os.path.join(BASE_URL, endpoint)
 
     file = open('asset_layouts.json')
     layouts = json.load(file)
+    selfrefs = []
     for layout in layouts:
         existingLayouts = getExistingRecords(endpoint, namesonly=True)
         if layout['name'] not in existingLayouts:
+            fields = layout['fields']
+            for field in fields:
+                if field['field_type'] == 'AssetTag':
+                    if layout['name'] == field['linkable_id']:
+                        layout['fields'].remove(field)
+                        selfref = copy.deepcopy(layout)
+                        selfref['fields'].clear()
+                        selfref['fields'].append(field)
+                        selfrefs.append(selfref)
+                    else:
+                        layout = getLayoutLinkRefs(layout, field)
             data = {
                 "asset_layout": layout
             }
-
-            fields = data['asset_layout']['fields']
-            for field in fields:
-                if field['field_type'] == 'AssetTag':
-                    existing_Layouts = getExistingRecords(endpoint)
-                    for existing_Layout in existing_Layouts:
-                        if existing_Layout['name'] == field['linkable_id']:
-                            data['asset_layout']['fields'][fields.index(field)]['linkable_id'] = existing_Layout['id']
-
             r = requests.post(url, headers=headers, json=data)
             print(layout['name'] + ' ' + str(r.status_code) + ' ' + r.reason)
             if r.status_code != 200:
-                logging.error(layout['name'] + ' creation failed: ' + r.reason + '\n' + json.dumps(layout, indent=4))
+                logging.error('asset_layout: ' + layout['name'] + ' creation failed: ' + r.reason + '\n' + url + '\n' + json.dumps(data, indent=4))
         else:
             print(layout['name'] + ' already exists.')
+    if len(selfrefs) > 0:
+        existingLayouts = getExistingRecords(endpoint)
+        for selfref in selfrefs:
+            id = 0
+            for afield in selfref['fields']:
+                if afield['field_type'] == 'AssetTag':
+                    if isinstance(afield['linkable_id'], str):
+                        selfref = getLayoutLinkRefs(selfref, afield)
+            for existingLayout in existingLayouts:
+                if existingLayout['name'] == selfref['name']:
+                    id = existingLayout['id']
+            url = BASE_URL + endpoint + '/' + str(id)
+            data = {
+                "asset_layout": selfref
+            }
+            r = requests.put(url, headers=headers, json=data)
+            print(selfref['name'] + ' update status: ' + str(r.status_code) + ': ' + r.reason)
+            logging.info('asset_layout: ' + selfref['name'] + ' update info: ' + r.reason + '\n' + url + '\n' + json.dumps(data, indent=4))
+            if r.status_code != 200:
+                logging.error('asset_layout: ' + selfref['name'] + ' update failed: ' + r.reason + '\n' + url + '\n' + json.dumps(data, indent=4))
 
 def createcompanies(source = ""):
     endpoint = 'companies'
