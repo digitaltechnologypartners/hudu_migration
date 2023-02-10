@@ -3,7 +3,7 @@
         "name":"Location",
         "icon":"fas fa-map-marker-alt",
         "color":"#000000",
-        "icon_color":"#000000",
+        "icon_color":"#FFFFFF",
         "fields":[
             {
                 "label":"Street_Address",
@@ -47,7 +47,7 @@
         "name":"Server",
         "icon":"far fa-server",
         "color":"#000000",
-        "icon_color":"#000000",
+        "icon_color":"#FFFFFF",
         "fields":[
             {
                 "label":"Location",
@@ -110,7 +110,7 @@
         "name":"Computer",
         "icon":"far fa-computer-classic",
         "color":"#000000",
-        "icon_color":"#000000",
+        "icon_color":"#FFFFFF",
         "fields":[
             {
                 "label":"Location",
@@ -174,7 +174,7 @@
         "name":"Router/Firewall",
         "icon":"far fa-block-brick-fire",
         "color":"#000000",
-        "icon_color":"#000000",
+        "icon_color":"#FFFFFF",
         "fields":[
             {
                 "label":"Location",
