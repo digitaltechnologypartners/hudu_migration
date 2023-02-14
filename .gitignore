@@ -1,6 +1,6 @@
 # custom stuff
 local/
-config.ini
+config/config.ini
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
