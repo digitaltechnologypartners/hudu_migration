@@ -1,0 +1,12 @@
+[API]
+API_KEY = apikey
+BASE_URL = https://huduurl.com/api/v1/
+
+[DATABASE]
+GLUE_DB_CON_STR = mysql+pymysql://username:password@dbhost:####/dbname?charset=utf8mb4
+MANG_DB_CON_STR = mssql+pymssql://username:password@cwhost:####/dbname
+GLUE_EXPT_PATH = /path/to/glue/csv/export
+
+[FILE]
+ASSET_LAYOUTS_JSON = /path/to/asset_layouts.json
+ASSET_LAYOUTS_OUTPUT = /path/to/existing_layouts.json
