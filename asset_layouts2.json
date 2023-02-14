@@ -45,37 +45,30 @@
                 {
                     "label":"Street_Address",
                     "field_type":"Text",
-                    "position": 1,
                     "show_in_list": "true"
                 },
                 {
                     "label":"City",
                     "field_type":"Text",
-                    "position": 2,
                     "show_in_list": "true"
                 },
                 {
                     "label":"State",
                     "field_type":"Dropdown",
-                    "position": 3,
                     "options": "GA\r\nAL\r\nSC\r\nTN\r\nFL",
                     "show_in_list": "true"
                 },
                 {
                     "label":"Zip",
-                    "field_type":"Number",
-                    "position": 4
+                    "field_type":"Number"
                 },
                 {
                     "label":"Primary_Phone",
                     "field_type":"Phone",
-                    "position": 5,
                     "show_in_list": "true"
                 }
             ],
-            "common_fields":{
-
-            }
+            "common_fields":[]
         },
         {
             "name":"Server",
@@ -85,19 +78,18 @@
                     "label":"Make",
                     "field_type":"Dropdown",
                     "options": "Dell\r\nLenovo\r\nHP\r\nOther/Whitebox",
-                    "show_in_list": "true",
-                    "position":4
+                    "show_in_list": "true"
                 }
             ],
-            "common_fields":{
-                "Location":1,
-                "Serial":2,
-                "IP":3,
-                "Model":5,
-                "isVM":6,
-                "isHypervisor":7,
-                "VM Host":8
-            }
+            "common_fields":[
+                "Location",
+                "Serial",
+                "IP",
+                "Model",
+                "isVM",
+                "isHypervisor",
+                "VM Host"
+            ]
         },
         {
             "name":"Computer",
@@ -107,24 +99,22 @@
                     "label":"Make",
                     "field_type":"Dropdown",
                     "options": "Dell\r\nLenovo\r\nHP\r\nMSI\r\nOther/Whitebox",
-                    "position": 4,
                     "show_in_list": "true"
                 },
                 {
                     "label":"isLaptop",
                     "field_type":"CheckBox",
-                    "position": 6,
                     "show_in_list": "true"
                 }
             ],
-            "common_fields":{
-                "Location":1,
-                "Serial":2,
-                "IP":3,
-                "Model":5,
-                "isVM":7,
-                "VM Host":8
-            }
+            "common_fields":[
+                "Location",
+                "Serial",
+                "IP",
+                "Model",
+                "isVM",
+                "VM Host"
+            ]
         },
         {
             "name":"Router/Firewall",
@@ -134,19 +124,18 @@
                     "label":"Make",
                     "field_type":"Dropdown",
                     "options": "OPNSense\r\nUntangle\r\nSophos\r\nSonicWall\r\nOther",
-                    "position": 4,
                     "show_in_list": "true"
                 }
             ],
-            "common_fields":{
-                "Location":1,
-                "Serial":2,
-                "IP":3,
-                "Model":5,
-                "isVM":6,
-                "isHypervisor":7,
-                "VM Host":8
-            }
+            "common_fields":[
+                "Location",
+                "Serial",
+                "IP",
+                "Model",
+                "isVM",
+                "isHypervisor",
+                "VM Host"
+            ]
         }
     ]
 }

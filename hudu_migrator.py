@@ -7,9 +7,14 @@ import json
 import logging
 import copy
 
+from ratelimit import limits, RateLimitException, sleep_and_retry
+
+ONE_MINUTE = 60
+MAX_CALLS_PER_MINUTE = 300
+
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename='migrator.log', filemode='a', level=logging.INFO, \
-    format='%(asctime)s : %(levelname)s : %(message)s : ', datefmt='%m/%d/%Y %I:%M:%S %p')
+    format='%(asctime)s : %(levelname)s : %(message)s ', datefmt='%m/%d/%Y %I:%M:%S %p')
 
 load_dotenv()
 
@@ -50,15 +55,47 @@ def getExistingRecords(endpoint, namesonly=False):
     while recordsResultsCount == 25:
         url = BASE_URL + endpointpage + str(pagenum)
         r = requests.get(url,headers=headers)
-        existing_records = r.json()[endpoint]
-        pagenum += 1
-        recordsResultsCount = len(existing_records)
-        for record in existing_records:
-            if namesonly == True:
-                records.append(record['name'])
-            else:
-                records.append(record)
+        if r.status_code == 200:
+            existing_records = r.json()[endpoint]
+            pagenum += 1
+            recordsResultsCount = len(existing_records)
+            for record in existing_records:
+                if namesonly == True:
+                    records.append(record['name'])
+                else:
+                    records.append(record)
+        else:
+            print('Got an error while getting records for ' + endpoint + ': ' + str(r.status_code) + ' ' + r.reason)
+            logging.error('Got an error while getting records for ' + endpoint + ': ' + str(r.status_code) + ' ' + r.reason + '\n' + json.dumps(r.json(), indent=4))
+            break
     return records
+
+def parseLayouts(layouts):
+    parsedLayouts = []
+
+    commonFields = layouts["common_fields"]
+    assetLayouts = layouts["asset_layouts"]
+
+    for assetLayout in assetLayouts:
+        assetLayout["color"] = "#000000"
+        assetLayout["icon_color"] = "#FFFFFF"
+        assetLayout["active"] = True
+
+        for field in assetLayout["common_fields"]:
+            for commonField in commonFields:
+                if field == commonField["label"]:
+                    assetLayout["fields"].append(commonField)
+
+        assetLayout.pop("common_fields")
+        
+        position = 1
+        for layoutField in assetLayout['fields']:
+            layoutField["position"] = position
+            position += 1
+
+        parsedLayouts.append(assetLayout)
+
+    return parsedLayouts
 
 def getLayoutLinkRefs(layout, field):
     existingLayouts = getExistingRecords('asset_layouts')
@@ -71,8 +108,9 @@ def createlayouts():
     endpoint = 'asset_layouts'
     url = os.path.join(BASE_URL, endpoint)
 
-    file = open('asset_layouts.json')
-    layouts = json.load(file)
+    file = open('asset_layouts2.json')
+    layoutsjson = json.load(file)
+    layouts = parseLayouts(layoutsjson)
     selfrefs = []
     for layout in layouts:
         existingLayouts = getExistingRecords(endpoint, namesonly=True)
@@ -94,9 +132,12 @@ def createlayouts():
             r = requests.post(url, headers=headers, json=data)
             print(layout['name'] + ' ' + str(r.status_code) + ' ' + r.reason)
             if r.status_code != 200:
-                logging.error('asset_layout: ' + layout['name'] + ' creation failed: ' + r.reason + '\n' + url + '\n' + json.dumps(data, indent=4))
+                logging.error('asset_layout: ' + layout['name'] + ' creation failed: ' + r.reason + '\n' + url + '\n' + json.dumps(data, indent=4) + '\n' + json.dumps(r.json(), indent=4))
+            else:
+                logging.info('asset_layout: ' + layout['name'] + ' creation info: ' + r.reason + '\n' + url + '\n' + json.dumps(data, indent=4))
         else:
             print(layout['name'] + ' already exists.')
+            logging.warning('asset_layout: ' + layout['name'] + 'already exists. No http request was made.')
     if len(selfrefs) > 0:
         existingLayouts = getExistingRecords(endpoint)
         for selfref in selfrefs:
@@ -114,13 +155,12 @@ def createlayouts():
             }
             r = requests.put(url, headers=headers, json=data)
             print(selfref['name'] + ' update status: ' + str(r.status_code) + ': ' + r.reason)
-            logging.info('asset_layout: ' + selfref['name'] + ' update info: ' + r.reason + '\n' + url + '\n' + json.dumps(data, indent=4))
             if r.status_code != 200:
-                logging.error('asset_layout: ' + selfref['name'] + ' update failed: ' + r.reason + '\n' + url + '\n' + json.dumps(data, indent=4))
+                logging.error('asset_layout: ' + selfref['name'] + ' update failed: ' + r.reason + '\n' + url + '\n' + json.dumps(data, indent=4) + '\n' + json.dumps(r.json(), indent=4))
+            else:
+                logging.info('asset_layout: ' + selfref['name'] + ' update info: ' + r.reason + '\n' + url + '\n' + json.dumps(data, indent=4))
 
-def createcompanies(source = ""):
-    endpoint = 'companies'
-    url = os.path.join(BASE_URL, endpoint)
+def getCompaniesJson(source = ""):
     if source == 'glue':
         query = text("""select orgs.name as name
                 ,organization_type
@@ -142,12 +182,52 @@ def createcompanies(source = ""):
                 left join locations locs on orgs.name = locs.organization and locs.primary = 1""")
         connection = getExportDB()
     elif source == 'manage':
-        query = text('')
+        query = text("""SELECT com.Company_Name AS name
+                ,com.Company_Type_Desc AS organization_type
+                ,com.Company_Status_Desc AS organization_status
+                ,com.Company_ID AS short_name
+                ,adr.Site_Name AS primary_location_name
+                ,adr.Address_Line1 AS address_1
+                ,adr.Address_Line2 AS address_2
+                ,adr.City AS city
+                ,adr.State_ID AS region
+                ,adr.Country AS country
+                ,adr.Zip AS postal_code
+                ,adr.PhoneNbr AS phone
+                ,adr.PhoneNbr_Fax AS fax
+                ,com.Website_URL AS website
+            FROM v_rpt_Company com
+                LEFT JOIN v_rpt_CompanyAddress adr ON com.Company_RecID = adr.Company_RecID AND adr.Default_Flag = 1""")
         connection = getManageDB()
-
+    
     organizations = pd.read_sql(query,con=connection)
+    if source == 'manage':
+        glueQnaQuery = text("""select orgs.name as name
+                ,quick_notes 
+                ,alert
+            from organizations orgs""")
+        glueQna = pd.read_sql(glueQnaQuery,con=getExportDB())
+        organizations = pd.merge(organizations, glueQna, on="name", how="left")
+
+
     organizations = organizations.to_json(orient = 'records')
     organizations = json.loads(organizations)
+    return organizations
+
+def chkTypeBlackList(org):
+    keep = True
+    typeBlackList = ["Competitor","Demo Company","Former Client","Former Client - Bought by other DTP Customer","Not-a-fit","Partner","Prospect","Site Billing Company","Subcontractor","Vendor"]
+    companyTypes = org['organization_type'].split(', ')
+    for companyType in companyTypes:
+        if companyType in typeBlackList:
+            keep = False
+    return keep
+
+def rmNonClients(organizations):
+    orgs = [org for org in organizations if chkTypeBlackList(org)]
+    return orgs
+
+def parseCompaniesJson(organizations):
     companies = []
 
     for org in organizations:
@@ -155,7 +235,6 @@ def createcompanies(source = ""):
         company['name'] = org['name']
         company['company_type'] = org['organization_type']
         company['id_number'] = org['short_name']
-        company['notes'] = org['quick_notes']
         company['address_line_1'] = org['address_1']
         company['address_line_2'] = org['address_2']
         company['city'] = org['city']
@@ -164,20 +243,50 @@ def createcompanies(source = ""):
         company['country_name'] = org['country']
         company['phone_number'] = org['phone']
         company['fax_number'] = org['fax']
-        companies.append(company)
-        
-    for company in companies:
-        existingCompanies = getExistingRecords(endpoint, namesonly=True)
-        if company['name'] not in existingCompanies:
-            data = {
-                "company": company
-            }
-            r = requests.post(url, headers=headers, json=data)
-            print(company['name'] + ' ' + str(r.status_code) + ' ' + r.reason)
-            if r.status_code != 200:
-                logging.error(company['name'] + ' creation failed: ' + r.reason + '\n' + json.dumps(company, indent=4))
+        if org['website']:
+            company['website'] = org['website']
+        if org["alert"] is not None:
+            if org['quick_notes'] is not None:
+                company['notes'] = '<h3 style="color:#b22222">ALERT: ' + org['alert'] + '</h3><br><br>' + org['quick_notes']
+            else:
+                company['notes'] = '<h3 style="color:#b22222">ALERT: ' + org['alert'] + '</h3><br><br>'
         else:
-            print(company['name'] + ' already exists.')
+            company['notes'] = org['quick_notes']
+        
+        companies.append(company)
+    
+    return companies
+
+@sleep_and_retry
+@limits(calls=MAX_CALLS_PER_MINUTE, period=ONE_MINUTE)
+def createCompany(company, existingCompanies, url):
+    if company['name'] not in existingCompanies:
+        data = {
+            "company": company
+        }
+        r = requests.post(url, headers=headers, json=data)
+        print(company['name'] + ' ' + str(r.status_code) + ' ' + r.reason)
+        if r.status_code != 200:
+            if r.json():
+                response = json.dumps(r.json(), indent=4)
+            else:
+                response = ''
+            logging.error(company['name'] + ' creation failed: ' + r.reason + '\n' + url + '\n' + json.dumps(company, indent=4) + '\n' + response)
+    else:
+        print(company['name'] + ' already exists.')
+        logging.warning(company['name'] + ' already exists. No http request was made')
+
+def createCompanies(source = ""):
+    endpoint = 'companies'
+    url = os.path.join(BASE_URL, endpoint)
+
+    orgs = getCompaniesJson(source)
+    cleanedOrgs = rmNonClients(orgs)
+    companies = parseCompaniesJson(cleanedOrgs)       
+    existingCompanies = getExistingRecords(endpoint, namesonly=True)
+
+    for company in companies:
+        createCompany(company,existingCompanies,url)
 
 def appHeader():
     os.system('cls')
@@ -200,9 +309,9 @@ while command not in ['quit','exit','stop']:
     elif command == 'crlayouts':
         createlayouts()
     elif command == 'crcompanies --glue':
-        createcompanies('glue')
+        createCompanies('glue')
     elif command == 'crcompanies --manage':
-        createcompanies('manage')
+        createCompanies('manage')
     elif command in ['quit','exit','stop']:
         print("# Goodbye")
     else:
