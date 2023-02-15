@@ -1,51 +1,51 @@
-import pandas as pd
-from sqlalchemy import create_engine, text
-import os
-from dotenv import load_dotenv
-import requests
-import json
-import logging
-import copy
+# import pandas as pd
+# from sqlalchemy import create_engine, text
+# import os
+# from dotenv import load_dotenv
+# import requests
+# import json
+# import logging
+# import copy
 
-from ratelimit import limits, RateLimitException, sleep_and_retry
+# from ratelimit import limits, RateLimitException, sleep_and_retry
 
-ONE_MINUTE = 60
-MAX_CALLS_PER_MINUTE = 300
+# MINUTE = 60
+# MAX_CALLS = 300
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(filename='migrator.log', filemode='a', level=logging.INFO, \
-    format='%(asctime)s : %(levelname)s : %(message)s ', datefmt='%m/%d/%Y %I:%M:%S %p')
+# logger = logging.getLogger(__name__)
+# logging.basicConfig(filename='migrator.log', filemode='a', level=logging.INFO, \
+#     format='%(asctime)s : %(levelname)s : %(message)s ', datefmt='%m/%d/%Y %I:%M:%S %p')
 
-load_dotenv()
+# load_dotenv()
 
-GLUE_DB_CON_STR = os.getenv('GLUE_DB_CON_STR')
-GLUE_EXPT_PATH = os.getenv('GLUE_EXPT_PATH')
-MANG_DB_CON_STR = os.getenv('MANG_DB_CON_STR')
-API_KEY = os.getenv('API_KEY')
-BASE_URL = os.getenv('BASE_URL')
+# GLUE_DB_CON_STR = os.getenv('GLUE_DB_CON_STR')
+# GLUE_EXPT_PATH = os.getenv('GLUE_EXPT_PATH')
+# MANG_DB_CON_STR = os.getenv('MANG_DB_CON_STR')
+# API_KEY = os.getenv('API_KEY')
+# BASE_URL = os.getenv('BASE_URL')
 
-headers = {
-    'x-api-key':API_KEY,
-}
+# headers = {
+#     'x-api-key':API_KEY,
+# }
 
-def getExportDB():
-    engine = create_engine(GLUE_DB_CON_STR)
-    con = engine.connect().execution_options(isolation_level="AUTOCOMMIT")
-    return con
+# def getExportDB():
+#     engine = create_engine(GLUE_DB_CON_STR)
+#     con = engine.connect().execution_options(isolation_level="AUTOCOMMIT")
+#     return con
 
-def getManageDB():
-    engine = create_engine(MANG_DB_CON_STR)
-    con = engine.connect()
-    return con
+# def getManageDB():
+#     engine = create_engine(MANG_DB_CON_STR)
+#     con = engine.connect()
+#     return con
 
-def loadExpDb():
-    for file in os.listdir(GLUE_EXPT_PATH):
-        if file.endswith(".csv"):
-            df = pd.read_csv(open(GLUE_EXPT_PATH + '/' + file))
-            tablename = os.path.splitext(file)[0]
-            connection = getExportDB()
-            df.to_sql(tablename,con=connection,if_exists='replace',index=False)
-            print(file + ' OK')
+# def loadExpDb():
+#     for file in os.listdir(GLUE_EXPT_PATH):
+#         if file.endswith(".csv"):
+#             df = pd.read_csv(open(GLUE_EXPT_PATH + '/' + file))
+#             tablename = os.path.splitext(file)[0]
+#             connection = getExportDB()
+#             df.to_sql(tablename,con=connection,if_exists='replace',index=False)
+#             print(file + ' OK')
 
 # def getExistingRecords(endpoint, namesonly=False):
     # endpointpage = endpoint + '?page='
@@ -160,133 +160,133 @@ def loadExpDb():
 #             else:
 #                 logging.info('asset_layout: ' + selfref['name'] + ' update info: ' + r.reason + '\n' + url + '\n' + json.dumps(data, indent=4))
 
-def getCompaniesJson(source = ""):
-    if source == 'glue':
-        query = text("""select orgs.name as name
-                ,organization_type
-                ,organization_status
-                ,short_name
-                ,quick_notes
-                ,alert
-                ,locs.name as primary_location_name
-                ,address_1
-                ,address_2
-                ,city
-                ,region
-                ,country
-                ,postal_code
-                ,phone
-                ,fax
-                ,locs.notes as location_notes
-            from organizations orgs 
-                left join locations locs on orgs.name = locs.organization and locs.primary = 1""")
-        connection = getExportDB()
-    elif source == 'manage':
-        query = text("""SELECT com.Company_Name AS name
-                ,com.Company_Type_Desc AS organization_type
-                ,com.Company_Status_Desc AS organization_status
-                ,com.Company_ID AS short_name
-                ,adr.Site_Name AS primary_location_name
-                ,adr.Address_Line1 AS address_1
-                ,adr.Address_Line2 AS address_2
-                ,adr.City AS city
-                ,adr.State_ID AS region
-                ,adr.Country AS country
-                ,adr.Zip AS postal_code
-                ,adr.PhoneNbr AS phone
-                ,adr.PhoneNbr_Fax AS fax
-                ,com.Website_URL AS website
-            FROM v_rpt_Company com
-                LEFT JOIN v_rpt_CompanyAddress adr ON com.Company_RecID = adr.Company_RecID AND adr.Default_Flag = 1""")
-        connection = getManageDB()
+# def getCompaniesJson(source = ""):
+#     if source == 'glue':
+#         query = text("""select orgs.name as name
+#                 ,organization_type
+#                 ,organization_status
+#                 ,short_name
+#                 ,quick_notes
+#                 ,alert
+#                 ,locs.name as primary_location_name
+#                 ,address_1
+#                 ,address_2
+#                 ,city
+#                 ,region
+#                 ,country
+#                 ,postal_code
+#                 ,phone
+#                 ,fax
+#                 ,locs.notes as location_notes
+#             from organizations orgs 
+#                 left join locations locs on orgs.name = locs.organization and locs.primary = 1""")
+#         connection = getExportDB()
+#     elif source == 'manage':
+#         query = text("""SELECT com.Company_Name AS name
+#                 ,com.Company_Type_Desc AS organization_type
+#                 ,com.Company_Status_Desc AS organization_status
+#                 ,com.Company_ID AS short_name
+#                 ,adr.Site_Name AS primary_location_name
+#                 ,adr.Address_Line1 AS address_1
+#                 ,adr.Address_Line2 AS address_2
+#                 ,adr.City AS city
+#                 ,adr.State_ID AS region
+#                 ,adr.Country AS country
+#                 ,adr.Zip AS postal_code
+#                 ,adr.PhoneNbr AS phone
+#                 ,adr.PhoneNbr_Fax AS fax
+#                 ,com.Website_URL AS website
+#             FROM v_rpt_Company com
+#                 LEFT JOIN v_rpt_CompanyAddress adr ON com.Company_RecID = adr.Company_RecID AND adr.Default_Flag = 1""")
+#         connection = getManageDB()
     
-    organizations = pd.read_sql(query,con=connection)
-    if source == 'manage':
-        glueQnaQuery = text("""select orgs.name as name
-                ,quick_notes 
-                ,alert
-            from organizations orgs""")
-        glueQna = pd.read_sql(glueQnaQuery,con=getExportDB())
-        organizations = pd.merge(organizations, glueQna, on="name", how="left")
+#     organizations = pd.read_sql(query,con=connection)
+#     if source == 'manage':
+#         glueQnaQuery = text("""select orgs.name as name
+#                 ,quick_notes 
+#                 ,alert
+#             from organizations orgs""")
+#         glueQna = pd.read_sql(glueQnaQuery,con=getExportDB())
+#         organizations = pd.merge(organizations, glueQna, on="name", how="left")
 
 
-    organizations = organizations.to_json(orient = 'records')
-    organizations = json.loads(organizations)
-    return organizations
+#     organizations = organizations.to_json(orient = 'records')
+#     organizations = json.loads(organizations)
+#     return organizations
 
-def chkTypeBlackList(org):
-    keep = True
-    typeBlackList = ["Competitor","Demo Company","Former Client","Former Client - Bought by other DTP Customer","Not-a-fit","Partner","Prospect","Site Billing Company","Subcontractor","Vendor"]
-    companyTypes = org['organization_type'].split(', ')
-    for companyType in companyTypes:
-        if companyType in typeBlackList:
-            keep = False
-    return keep
+# def chkTypeBlackList(org):
+#     keep = True
+#     typeBlackList = ["Competitor","Demo Company","Former Client","Former Client - Bought by other DTP Customer","Not-a-fit","Partner","Prospect","Site Billing Company","Subcontractor","Vendor"]
+#     companyTypes = org['organization_type'].split(', ')
+#     for companyType in companyTypes:
+#         if companyType in typeBlackList:
+#             keep = False
+#     return keep
 
-def rmNonClients(organizations):
-    orgs = [org for org in organizations if chkTypeBlackList(org)]
-    return orgs
+# def rmNonClients(organizations):
+#     orgs = [org for org in organizations if chkTypeBlackList(org)]
+#     return orgs
 
-def parseCompaniesJson(organizations):
-    companies = []
+# def parseCompaniesJson(organizations):
+#     companies = []
 
-    for org in organizations:
-        company = {}
-        company['name'] = org['name']
-        company['company_type'] = org['organization_type']
-        company['id_number'] = org['short_name']
-        company['address_line_1'] = org['address_1']
-        company['address_line_2'] = org['address_2']
-        company['city'] = org['city']
-        company['state'] = org['region']
-        company['zip'] = org['postal_code']
-        company['country_name'] = org['country']
-        company['phone_number'] = org['phone']
-        company['fax_number'] = org['fax']
-        if org['website']:
-            company['website'] = org['website']
-        if org["alert"] is not None:
-            if org['quick_notes'] is not None:
-                company['notes'] = '<h3 style="color:#b22222">ALERT: ' + org['alert'] + '</h3><br><br>' + org['quick_notes']
-            else:
-                company['notes'] = '<h3 style="color:#b22222">ALERT: ' + org['alert'] + '</h3><br><br>'
-        else:
-            company['notes'] = org['quick_notes']
+#     for org in organizations:
+#         company = {}
+#         company['name'] = org['name']
+#         company['company_type'] = org['organization_type']
+#         company['id_number'] = org['short_name']
+#         company['address_line_1'] = org['address_1']
+#         company['address_line_2'] = org['address_2']
+#         company['city'] = org['city']
+#         company['state'] = org['region']
+#         company['zip'] = org['postal_code']
+#         company['country_name'] = org['country']
+#         company['phone_number'] = org['phone']
+#         company['fax_number'] = org['fax']
+#         if org['website']:
+#             company['website'] = org['website']
+#         if org["alert"] is not None:
+#             if org['quick_notes'] is not None:
+#                 company['notes'] = '<h3 style="color:#b22222">ALERT: ' + org['alert'] + '</h3><br><br>' + org['quick_notes']
+#             else:
+#                 company['notes'] = '<h3 style="color:#b22222">ALERT: ' + org['alert'] + '</h3><br><br>'
+#         else:
+#             company['notes'] = org['quick_notes']
         
-        companies.append(company)
+#         companies.append(company)
     
-    return companies
+#     return companies
 
-@sleep_and_retry
-@limits(calls=MAX_CALLS_PER_MINUTE, period=ONE_MINUTE)
-def createCompany(company, existingCompanies, url):
-    if company['name'] not in existingCompanies:
-        data = {
-            "company": company
-        }
-        r = requests.post(url, headers=headers, json=data)
-        print(company['name'] + ' ' + str(r.status_code) + ' ' + r.reason)
-        if r.status_code != 200:
-            if r.json():
-                response = json.dumps(r.json(), indent=4)
-            else:
-                response = ''
-            logging.error(company['name'] + ' creation failed: ' + r.reason + '\n' + url + '\n' + json.dumps(company, indent=4) + '\n' + response)
-    else:
-        print(company['name'] + ' already exists.')
-        logging.warning(company['name'] + ' already exists. No http request was made')
+# @sleep_and_retry
+# @limits(calls=MAX_CALLS_PER_MINUTE, period=ONE_MINUTE)
+# def createCompany(company, existingCompanies, url):
+#     if company['name'] not in existingCompanies:
+#         data = {
+#             "company": company
+#         }
+#         r = requests.post(url, headers=headers, json=data)
+#         print(company['name'] + ' ' + str(r.status_code) + ' ' + r.reason)
+#         if r.status_code != 200:
+#             if r.json():
+#                 response = json.dumps(r.json(), indent=4)
+#             else:
+#                 response = ''
+#             logging.error(company['name'] + ' creation failed: ' + r.reason + '\n' + url + '\n' + json.dumps(company, indent=4) + '\n' + response)
+#     else:
+#         print(company['name'] + ' already exists.')
+#         logging.warning(company['name'] + ' already exists. No http request was made')
 
-def createCompanies(source = ""):
-    endpoint = 'companies'
-    url = os.path.join(BASE_URL, endpoint)
+# def createCompanies(source = ""):
+#     endpoint = 'companies'
+#     url = os.path.join(BASE_URL, endpoint)
 
-    orgs = getCompaniesJson(source)
-    cleanedOrgs = rmNonClients(orgs)
-    companies = parseCompaniesJson(cleanedOrgs)       
-    existingCompanies = getExistingRecords(endpoint, namesonly=True)
+#     orgs = getCompaniesJson(source)
+#     cleanedOrgs = rmNonClients(orgs)
+#     companies = parseCompaniesJson(cleanedOrgs)       
+#     existingCompanies = getExistingRecords(endpoint, namesonly=True)
 
-    for company in companies:
-        createCompany(company,existingCompanies,url)
+#     for company in companies:
+#         createCompany(company,existingCompanies,url)
 
 # def appHeader():
 #     os.system('cls')
