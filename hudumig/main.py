@@ -4,6 +4,7 @@ import logging
 from .utils import getExistingRecords, writeJson
 from .modules.layouts import createlayouts
 from .modules.companies import createCompanies
+from .modules.assets import createAssets
 
 
 cfg = ConfigParser()
@@ -71,17 +72,17 @@ def assets(create,output,assettype):
     
     You must also specify the query file each time you use the --create option, and the output file each time you use the --output option."""
     layouts = getExistingRecords('asset_layouts')
-    found = False
+    assetLayoutId = None
     for layout in layouts:
         if layout['name'] == assettype:
-            click.echo(layout['name'])
-            found = True
-    if found == False:
+            assetLayoutId = layout['id']
+    if assetLayoutId == None:
         click.echo('Asset Type not found.')
     else:
         if create:
-            # create assets
-            pass
+            createAssets(assettype,create)
         if output:
-            # output assets
-            pass
+            endpoint = 'assets?asset_layout_id=' + str(assetLayoutId) + '&'
+            assets = getExistingRecords(endpoint)
+            writeJson(assets,output)
+            click.echo('Existing assets of type ' + assettype + ' exported to ' + output)

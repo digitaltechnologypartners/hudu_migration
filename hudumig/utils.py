@@ -53,7 +53,10 @@ def loadExpDb():
             print(file + ' OK')
 
 def getExistingRecords(endpoint, namesonly=False):
-    endpointpage = endpoint + '?page='
+    if not endpoint.endswith('&'):
+        endpointpage = endpoint + '?page='
+    else:
+        endpointpage = endpoint + 'page='
     records = []
     recordsResultsCount = 25
     pagenum = 1
@@ -62,6 +65,8 @@ def getExistingRecords(endpoint, namesonly=False):
         url = BASE_URL + endpointpage + str(pagenum)
         r = requests.get(url,headers=headers)
         if r.status_code == 200:
+            if endpoint.endswith('&'):
+                endpoint = endpoint[:(endpoint.find('?'))]
             existing_records = r.json()[endpoint]
             pagenum += 1
             recordsResultsCount = len(existing_records)
@@ -71,8 +76,12 @@ def getExistingRecords(endpoint, namesonly=False):
                 else:
                     records.append(record)
         else:
+            try:
+                result = json.dumps(r.json())
+            except:
+                result = r.text
             print('Got an error while getting records for ' + endpoint + ': ' + str(r.status_code) + ' ' + r.reason)
-            logging.error('Got an error while getting records for ' + endpoint + ': ' + str(r.status_code) + ' ' + r.reason + '\n' + json.dumps(r.json(), indent=4))
+            logging.error('Got an error while getting records for ' + endpoint + ': ' + str(r.status_code) + ' ' + r.reason + url + '\n' + result)
             break
     return records
 
