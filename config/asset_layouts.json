@@ -35,6 +35,16 @@
             "linkable_id":"Server",
             "show_in_list": "true",
             "hint": "If this is a VM, this is its Hypervisor"
+        },
+        {
+            "label":"isPOE",
+            "field_type":"CheckBox",
+            "show_in_list": "true"
+        },
+        {
+            "label":"isManaged",
+            "field_type":"CheckBox",
+            "show_in_list": "true"
         }
     ],
     "asset_layouts":[
@@ -55,7 +65,7 @@
                 {
                     "label":"State",
                     "field_type":"Dropdown",
-                    "options": "GA\r\nAL\r\nSC\r\nTN\r\nFL",
+                    "options": "AL\r\nAZ\r\nFL\r\nGA\r\nID\r\nKY\r\nNC\r\nSC\r\nOK\r\nTN",
                     "show_in_list": "true"
                 },
                 {
@@ -77,7 +87,7 @@
                 {
                     "label":"Make",
                     "field_type":"Dropdown",
-                    "options": "Dell\r\nLenovo\r\nHP\r\nOther/Whitebox",
+                    "options": "Dell\r\nHP\r\nLenovo\r\nOther/Whitebox",
                     "show_in_list": "true"
                 }
             ],
@@ -98,7 +108,7 @@
                 {
                     "label":"Make",
                     "field_type":"Dropdown",
-                    "options": "Dell\r\nLenovo\r\nHP\r\nMSI\r\nOther/Whitebox",
+                    "options": "Dell\r\nHP\r\nLenovo\r\nMSI\r\nOther/Whitebox",
                     "show_in_list": "true"
                 },
                 {
@@ -123,7 +133,7 @@
                 {
                     "label":"Make",
                     "field_type":"Dropdown",
-                    "options": "OPNSense\r\nUntangle\r\nSophos\r\nSonicWall\r\nOther",
+                    "options": "OPNSense\r\nSonicWall\r\nSophos\r\nUntangle\r\nOther",
                     "show_in_list": "true"
                 }
             ],
@@ -135,6 +145,138 @@
                 "isVM",
                 "isHypervisor",
                 "VM Host"
+            ]
+        },
+        {
+            "name":"Switch",
+            "icon":"far fa-network-wired",
+            "fields":[
+                {
+                    "label":"Make",
+                    "field_type":"Dropdown",
+                    "options": "Cisco\r\nMicrotik\r\nNetgear\r\nTPLink\r\nTrendnet\r\nUniFi\r\nOther",
+                    "show_in_list": "true"
+                }
+            ],
+            "common_fields":[
+                "Location",
+                "Serial",
+                "IP",
+                "Model",
+                "isPOE",
+                "isManaged"
+            ]
+        },
+        {
+            "name":"WAP",
+            "icon":"far fa-wifi",
+            "fields":[
+                {
+                    "label":"Make",
+                    "field_type":"Dropdown",
+                    "options": "UniFi\r\nOther",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Specific Location in Office",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                }
+            ],
+            "common_fields":[
+                "Location",
+                "Serial",
+                "IP",
+                "Model"
+            ]
+        },
+        {
+            "name":"Print/Scan/Fax",
+            "icon":"far fa-print",
+            "fields":[
+                {
+                    "label":"Make",
+                    "field_type":"Dropdown",
+                    "options": "Brother\r\nCanon\r\nEpson\r\nHP\r\nLexmark\r\nXerox\r\nOther",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"isManagedbyPrinterCompany",
+                    "field_type":"CheckBox",
+                    "show_in_list": "true"
+                }
+            ],
+            "common_fields":[
+                "Location",
+                "Serial",
+                "IP",
+                "Model"
+            ]
+        },
+        {
+            "name":"Telephony",
+            "icon":"far fa-phone",
+            "fields":[
+                {
+                    "label":"Role",
+                    "field_type":"Dropdown",
+                    "options": "ATA\r\nHandset\r\nPBX\r\nOther"
+                },
+                {
+                    "label":"Type",
+                    "field_type":"Dropdown",
+                    "options": "3CX\r\nAllworx\r\nDTPBX\r\nFreePBX\r\nSnomONE\nOther",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Handset Type",
+                    "field_type":"Dropdown",
+                    "options": "3CX\r\nAllworx\r\nDTPBX\r\nFreePBX\r\nSnomONE\nOther",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Connectivity Method",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                }
+            ],
+            "common_fields":[
+                "Location",
+                "Serial",
+                "IP",
+                "Model"
+            ]
+        },
+        {
+            "name":"Surveillance System",
+            "icon":"far fa-camera-cctv",
+            "fields":[
+                {
+                    "label":"Make",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"isRemotelyAccessed",
+                    "field_type":"CheckBox",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"isHikvision",
+                    "field_type":"CheckBox",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Has HikConnect Configured",
+                    "field_type":"CheckBox",
+                    "show_in_list": "true"
+                }
+            ],
+            "common_fields":[
+                "Location",
+                "Serial",
+                "IP",
+                "Model"
             ]
         }
     ]
