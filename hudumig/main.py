@@ -86,7 +86,7 @@ def companies(create,source,xref,output,query,outputfile):
         click.echo('No option was selected. Enter "hudumig companies --help" to see available options.')
 
 @cli.command()
-@click.option('-c','--create', help='Create assets for specified ASSETTYPE from --query')
+@click.option('-c','--create', help='Create assets for specified ASSETTYPE')
 @click.option('-o','--output', help='Output existing assets for specified ASSETTYPE in Json to specified output file (occurs after creation if called in same command)')
 @click.argument('assettype')
 def assets(create,output,assettype):
