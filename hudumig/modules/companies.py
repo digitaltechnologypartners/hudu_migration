@@ -5,48 +5,64 @@ import json
 from sqlalchemy import text
 import requests
 import logging
-from ..utils import getExportDB,getManageDB,getExistingRecords,headers,rateLimiter,getQuery
+from ..utils import getExportDB,getManageDB,getExistingRecords,headers,rateLimiter,getQuery,APILog
 
 cfg = ConfigParser()
 cfg.read('./config/config.ini')
 
 BASE_URL = cfg['API']['BASE_URL']
-TYPE_BLACKLIST = cfg['COMPANIES']['TYPE_BLACKLIST']
+TYPE_BLACKLIST = cfg['COMPANIES']['TYPE_BLACKLIST'].split('\n,')
 
-def getCompaniesJson(source, query):
+ENDPOINT = 'companies'
+
+def getOrgsJson(orgsDF):
+    organizations = orgsDF.to_json(orient = 'records')
+    orgsJson = json.loads(organizations)
+    return orgsJson
+
+def getOrgsDF(source, query):
     if source == 'glue':
         connection = getExportDB()
     elif source == 'manage':
         connection = getManageDB()
-
     query = getQuery(query)
-
     organizations = pd.read_sql(query,con=connection)
+    return organizations
+
+def xRef(source, orgsDF):
     if source == 'manage':
         glueQnaQuery = text("""select orgs.name as name
                 ,quick_notes 
                 ,alert
             from organizations orgs""")
         glueQna = pd.read_sql(glueQnaQuery,con=getExportDB())
-        organizations = pd.merge(organizations, glueQna, on="name", how="left")
-
-    organizations = organizations.to_json(orient = 'records')
-    organizations = json.loads(organizations)
-    return organizations
+        orgsDF = pd.merge(orgsDF, glueQna, on="name", how="left")
+    elif source == 'glue':
+        manageWebsitesQuery = text("""SELECT com.Company_Name AS name
+                ,com.Website_URL AS website
+            FROM v_rpt_Company com""")
+        manageWebsites = pd.read_sql(manageWebsitesQuery,con=getManageDB())
+        orgsDF = pd.merge(orgsDF, manageWebsites, on="name", how="left")
+    print(len(orgsDF.index))
+    return orgsDF
 
 def chkTypeBlackList(org):
     keep = True
-    companyTypes = org['organization_type'].split(', ')
-    for companyType in companyTypes:
-        if companyType in TYPE_BLACKLIST:
-            keep = False
+    try:
+        companyTypes = org['organization_type'].split(', ')
+        for companyType in companyTypes:
+            if companyType in TYPE_BLACKLIST:
+                keep = False
+                logging.warning('Found type ' + companyType + ' in org ' + org['name'] + '. Org was dropped from migration.')
+    except:
+        logging.warning('Company: ' + org['name'] + ' has no organization type(s) specified.')
     return keep
 
 def rmNonClients(organizations):
     orgs = [org for org in organizations if chkTypeBlackList(org)]
     return orgs
 
-def parseCompaniesJson(organizations):
+def parseOrgsJson(organizations):
     companies = []
 
     for org in organizations:
@@ -62,18 +78,14 @@ def parseCompaniesJson(organizations):
         company['country_name'] = org['country']
         company['phone_number'] = org['phone']
         company['fax_number'] = org['fax']
-        if org['website']:
-            company['website'] = org['website']
-        if org["alert"] is not None:
-            if org['quick_notes'] is not None:
-                company['notes'] = '<h3 style="color:#b22222">ALERT: ' + org['alert'] + '</h3><br><br>' + org['quick_notes']
-            else:
-                company['notes'] = '<h3 style="color:#b22222">ALERT: ' + org['alert'] + '</h3><br><br>'
+        company['website'] = org['website']
+        if org["alert"] is not None and org['quick_notes'] is not None:
+            company['notes'] = '<h3 style="color:#b22222">ALERT: ' + org['alert'] + '</h3><br><br>' + org['quick_notes']
+        elif org["alert"] is not None and org['quick_notes'] is None:
+            company['notes'] = '<h3 style="color:#b22222">ALERT: ' + org['alert'] + '</h3><br><br>'
         else:
             company['notes'] = org['quick_notes']
-        
         companies.append(company)
-
     return companies
 
 def createCompany(company, existingCompanies, url):
@@ -85,23 +97,23 @@ def createCompany(company, existingCompanies, url):
         r = requests.post(url, headers=headers, json=data)
         print(company['name'] + ' ' + str(r.status_code) + ' ' + r.reason)
         if r.status_code != 200:
-            if r.json():
-                response = json.dumps(r.json(), indent=4)
-            else:
-                response = ''
-            logging.error(company['name'] + ' creation failed: ' + r.reason + '\n' + url + '\n' + json.dumps(company, indent=4) + '\n' + response)
+            APILog(ENDPOINT,company['name'],'error',url=url,data=data,response=r)
+        else:
+            APILog(ENDPOINT,company['name'],'info',url=None,data=None,response=r)
     else:
         print(company['name'] + ' already exists.')
-        logging.warning(company['name'] + ' already exists. No http request was made')
+        APILog(ENDPOINT,company['name'],'warning')
 
-def createCompanies(source,query):
-    endpoint = 'companies'
-    url = os.path.join(BASE_URL, endpoint)
+def createCompanies(source,query,xref):
+    url = os.path.join(BASE_URL, ENDPOINT)
 
-    orgs = getCompaniesJson(source,query)
-    cleanedOrgs = rmNonClients(orgs)
-    companies = parseCompaniesJson(cleanedOrgs)       
-    existingCompanies = getExistingRecords(endpoint, namesonly=True)
+    orgsDF = getOrgsDF(source,query)
+    if xref:
+        orgsDF = xRef(source, orgsDF)
+    orgsJson = getOrgsJson(orgsDF)
+    cleanedOrgs = rmNonClients(orgsJson)
+    companies = parseOrgsJson(cleanedOrgs)       
+    existingCompanies = getExistingRecords(ENDPOINT, namesonly=True)
 
     for company in companies:
         createCompany(company,existingCompanies,url)

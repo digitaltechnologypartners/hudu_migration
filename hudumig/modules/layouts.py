@@ -4,12 +4,14 @@ import json
 import copy
 import requests
 from configparser import ConfigParser
-from ..utils import getExistingRecords, headers
+from ..utils import getExistingRecords, headers, APILog
 
 cfg = ConfigParser()
 cfg.read('./config/config.ini')
 
 BASE_URL = cfg['API']['BASE_URL']
+
+ENDPOINT = 'asset_layouts'
 
 def parseLayouts(layouts):
     parsedLayouts = []
@@ -45,16 +47,37 @@ def getLayoutLinkRefs(layout, field):
             layout['fields'][layout['fields'].index(field)]['linkable_id'] = existingLayout['id']
     return layout
 
+def updateSelfRefs(selfrefs):
+    existingLayouts = getExistingRecords(ENDPOINT)
+    for selfref in selfrefs:
+        id = 0
+        for afield in selfref['fields']:
+            if afield['field_type'] == 'AssetTag':
+                if isinstance(afield['linkable_id'], str):
+                    selfref = getLayoutLinkRefs(selfref, afield)
+        for existingLayout in existingLayouts:
+            if existingLayout['name'] == selfref['name']:
+                id = existingLayout['id']
+        url = BASE_URL + ENDPOINT + '/' + str(id)
+        data = {
+            "asset_layout": selfref
+        }
+        r = requests.put(url, headers=headers, json=data)
+        print(selfref['name'] + ' update status: ' + str(r.status_code) + ': ' + r.reason)
+        if r.status_code != 200:
+            APILog(ENDPOINT,selfref['name'],'error',url=url,data=data,response=r)
+        else:
+            APILog(ENDPOINT,selfref['name'],'info',url=None,data=None,response=r)
+
 def createlayouts(filepath):
-    endpoint = 'asset_layouts'
-    url = os.path.join(BASE_URL, endpoint)
+    url = os.path.join(BASE_URL, ENDPOINT)
 
     file = open(filepath)
     layoutsjson = json.load(file)
     layouts = parseLayouts(layoutsjson)
     selfrefs = []
     for layout in layouts:
-        existingLayouts = getExistingRecords(endpoint, namesonly=True)
+        existingLayouts = getExistingRecords(ENDPOINT, namesonly=True)
         if layout['name'] not in existingLayouts:
             fields = layout['fields']
             for field in fields:
@@ -73,30 +96,11 @@ def createlayouts(filepath):
             r = requests.post(url, headers=headers, json=data)
             print(layout['name'] + ' ' + str(r.status_code) + ' ' + r.reason)
             if r.status_code != 200:
-                logging.error('asset_layout: ' + layout['name'] + ' creation failed: ' + r.reason + '\n' + url + '\n' + json.dumps(data, indent=4) + '\n' + json.dumps(r.json(), indent=4))
+                APILog(ENDPOINT,layout['name'],'error',url=url,data=data,response=r)
             else:
-                logging.info('asset_layout: ' + layout['name'] + ' creation info: ' + r.reason + '\n' + url + '\n' + json.dumps(data, indent=4))
+                APILog(ENDPOINT,layout['name'],'info',url=None,data=None,response=r)
         else:
             print(layout['name'] + ' already exists.')
-            logging.warning('asset_layout: ' + layout['name'] + 'already exists. No http request was made.')
+            APILog(ENDPOINT,layout['name'],'warning')
     if len(selfrefs) > 0:
-        existingLayouts = getExistingRecords(endpoint)
-        for selfref in selfrefs:
-            id = 0
-            for afield in selfref['fields']:
-                if afield['field_type'] == 'AssetTag':
-                    if isinstance(afield['linkable_id'], str):
-                        selfref = getLayoutLinkRefs(selfref, afield)
-            for existingLayout in existingLayouts:
-                if existingLayout['name'] == selfref['name']:
-                    id = existingLayout['id']
-            url = BASE_URL + endpoint + '/' + str(id)
-            data = {
-                "asset_layout": selfref
-            }
-            r = requests.put(url, headers=headers, json=data)
-            print(selfref['name'] + ' update status: ' + str(r.status_code) + ': ' + r.reason)
-            if r.status_code != 200:
-                logging.error('asset_layout: ' + selfref['name'] + ' update failed: ' + r.reason + '\n' + url + '\n' + json.dumps(data, indent=4) + '\n' + json.dumps(r.json(), indent=4))
-            else:
-                logging.info('asset_layout: ' + selfref['name'] + ' update info: ' + r.reason + '\n' + url + '\n' + json.dumps(data, indent=4))
+        updateSelfRefs(selfrefs)

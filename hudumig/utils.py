@@ -6,6 +6,7 @@ import json
 import pandas as pd
 from sqlalchemy import create_engine,text
 from ratelimit import limits, sleep_and_retry
+import traceback
 
 MINUTE = 60
 MAX_CALLS = 300
@@ -22,6 +23,31 @@ API_KEY = cfg['API']['API_KEY']
 headers = {
     'x-api-key':API_KEY,
 }
+
+def getResponseRequestType(response):
+    type = str(response.request)
+    type = type[(type.find(' ')):(type.find('>'))]
+    return type
+
+def APILog(endpoint, entityname, logtype, url=None, data=None, response=None):
+    if logtype == 'error':
+        try:
+            errorContent = json.dumps(response.json(), indent=4)
+        except:
+            errorContent = response.text
+        logging.error(endpoint + ': ' + entityname + ':' + getResponseRequestType(response) + ' failed: ' + str(response.status_code) + ': ' + response.reason + '\n' + url + '\n' + json.dumps(data, indent=4) + '\n' + errorContent)
+    elif logtype == 'warning':
+        logging.warning(endpoint + ': ' + entityname + ': already exists. No HTTP request was made.')
+    elif logtype == 'info':
+        logging.info(endpoint + ': ' + entityname + ':' + getResponseRequestType(response) + ' succeeded: ' + str(response.status_code) + ': ' + response.reason)
+
+def getErrorClass(error):
+    eClass = str(error.__class__)
+    eClass = eClass[eClass.find("'"):eClass.find('>')]
+    return eClass
+
+def stackLog(error,action):
+    logging.error(action + ' got: ' + getErrorClass(error) + ': ' + str(error) + '\n' + traceback.format_exc())
 
 @sleep_and_retry
 @limits(calls=MAX_CALLS, period=MINUTE)
@@ -76,12 +102,8 @@ def getExistingRecords(endpoint, namesonly=False):
                 else:
                     records.append(record)
         else:
-            try:
-                result = json.dumps(r.json())
-            except:
-                result = r.text
             print('Got an error while getting records for ' + endpoint + ': ' + str(r.status_code) + ' ' + r.reason)
-            logging.error('Got an error while getting records for ' + endpoint + ': ' + str(r.status_code) + ' ' + r.reason + url + '\n' + result)
+            APILog(endpoint,'Page ' + str(pagenum),'error',url=url,data='',response=r)
             break
     return records
 
