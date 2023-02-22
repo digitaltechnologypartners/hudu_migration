@@ -70,7 +70,8 @@
                 },
                 {
                     "label":"Zip",
-                    "field_type":"Number"
+                    "field_type":"Number",
+                    "show_in_list": "true"
                 },
                 {
                     "label":"Primary_Phone",
@@ -501,6 +502,42 @@
                 {
                     "label":"Has IP Restrictions in Place",
                     "field_type":"CheckBox",
+                    "show_in_list": "true"
+                }
+            ],
+            "common_fields":[
+                "Location"
+            ]
+        },
+        {
+            "name":"iDRAC",
+            "icon":"fas fa-power-off",
+            "fields":[
+                {
+                    "label":"Associated Machine",
+                    "field_type":"AssetTag",
+                    "linkable_id":"Server",
+                    "show_in_list": "true",
+                    "hint": "This is the machine this iDRAC is connected to"
+                },
+                {
+                    "label":"License Key",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Has Tunnel",
+                    "field_type":"CheckBox",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Local IP",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Natted IP",
+                    "field_type":"Text",
                     "show_in_list": "true"
                 }
             ],
