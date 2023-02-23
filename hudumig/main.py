@@ -1,10 +1,11 @@
 import click
 from configparser import ConfigParser
 import logging
-from .utils import getExistingRecords, writeJson, stackLog
+from .utils import getExistingRecords, writeJson, stackLog, getAssetLayoutAndID,loadExpDb
 from .modules.layouts import createlayouts
 from .modules.companies import createCompanies
 from .modules.assets import createAssets
+from sys import exit
 
 
 cfg = ConfigParser()
@@ -13,6 +14,7 @@ ASSET_LAYOUTS_JSON = cfg['ASSET_LAYOUTS']['ASSET_LAYOUTS_JSON']
 ASSET_LAYOUTS_OUTPUT = cfg['ASSET_LAYOUTS']['ASSET_LAYOUTS_OUTPUT']
 COMPANIES_OUTPUT = cfg['COMPANIES']['COMPANIES_OUTPUT']
 COMPANIES_QUERY = cfg['COMPANIES']['COMPANIES_QUERY']
+GLUE_EXPT_PATH = cfg['DATABASE']['GLUE_EXPT_PATH']
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename='migrator.log', filemode='a', level=logging.INFO, format='%(asctime)s : %(levelname)s : %(message)s ', datefmt='%m/%d/%Y %I:%M:%S %p')
@@ -22,14 +24,25 @@ def cli():
     pass
 
 @cli.command()
-def config():
-    click.echo('config')
+@click.option('-l','--loadexpdb',is_flag=True,help='Load the export DB with CSVs found in the ITGlue export folder.')
+@click.option('-d','--expdbpath',default=GLUE_EXPT_PATH,show_default=True,help='Declare the path in which to look for the export files.')
+def config(loadexpdb,expdbpath):
+    """Configure various aspects of hudumig."""
+    if loadexpdb:
+        try:
+            loadExpDb(expdbpath)
+        except Exception as e:
+            stackLog(e,'load export db')
+            click.echo('Got an error attempting to load the export database. Check the logs.')
+
+    if not loadexpdb:
+        click.echo('No option was selected. Enter "hudumig config --help" to see available options.')
 
 @cli.command()
 @click.option('-c','--create', is_flag=True, help='Create asset layouts from [LAYOUTSJSON]')
 @click.option('-o','--output', is_flag=True, help='Output existing layouts in Json to [OUTPUTFILE] (occurs after creation if called in same command)')
-@click.option('-l','layoutsjson', default=ASSET_LAYOUTS_JSON, show_default=True, help='Declare file from which to read layouts and then write them')
-@click.option('-f','outputfile', default=ASSET_LAYOUTS_OUTPUT, show_default=True, help='Declare file to output existing layouts to')
+@click.option('-l','--layoutsjson', default=ASSET_LAYOUTS_JSON, show_default=True, help='Declare file from which to read layouts and then write them')
+@click.option('-f','--outputfile', default=ASSET_LAYOUTS_OUTPUT, show_default=True, help='Declare file to output existing layouts to')
 def layouts(create,output,layoutsjson,outputfile):
     """Create asset layouts and/or output existing layouts to a json file."""
     endpoint='asset_layouts'
@@ -57,9 +70,9 @@ def layouts(create,output,layoutsjson,outputfile):
 @cli.command()
 @click.option('-c','--create', is_flag=True, help='Create companies from specified source db based on --query')
 @click.option('-s','--source', default='glue', type=click.Choice(['glue','manage'],case_sensitive=False), show_default=True, help='Declare the source database from which created companies should be pulled')
-@click.option('-x', '--xref', is_flag=True, help='If using glue as source, cross reference with manage to pull primary website. If using manage as source, cross reference with glue to pull Company Alerts and Quick notes.')
+@click.option('-x','--xref', is_flag=True, help='If using glue as source, cross reference with manage to pull primary website. If using manage as source, cross reference with glue to pull Company Alerts and Quick notes.')
 @click.option('-o','--output', is_flag=True, help='Output existing companies in Json to --outputfile (occurs after creation if called in same command)')
-@click.option('-q', '--query', default=COMPANIES_QUERY, show_default=True, help='Declare file containing query to use to pull companies from database')
+@click.option('-q','--query', default=COMPANIES_QUERY, show_default=True, help='Declare file containing query to use to pull companies from database')
 @click.option('-f','--outputfile', default=COMPANIES_OUTPUT, show_default=True, help='Declare file to output existing companies to')
 def companies(create,source,xref,output,query,outputfile):
     """Create companies and/or output existing companies to a json file.
@@ -95,25 +108,16 @@ def assets(create,output,assettype):
     You must specify the Asset Type you wish to work with by exact case sensitive name as it appears in Hudu.
     
     You must also specify the query file each time you use the --create option, and the output file each time you use the --output option."""
-    assetLayoutId = None
-    try:
-        layouts = getExistingRecords('asset_layouts')
-        for layout in layouts:
-            if layout['name'] == assettype:
-                assetLayoutId = layout['id']
-    except Exception as e:
-        stackLog(e,'get asset type')
-        click.echo('Got an error attempting to get asset type. Check the logs.')
-        return None
+    assetLayoutId,asset = getAssetLayoutAndID(assettype)
     if assetLayoutId == None:
-        click.echo('Asset Type not found.')
+        click.echo('Asset Type ' + assettype + ' not found.')
     else:
         if create:
             try:
                 createAssets(assettype,create)
             except Exception as e:
                 stackLog(e,'create ' + assettype + ' assets')
-                click.echo('Got an error attempting to create ' + assettype + ' assets . Check the logs.')
+                click.echo('Got an error attempting to create ' + assettype + ' assets. Check the logs.')
         if output:
             try:
                 endpoint = 'assets?asset_layout_id=' + str(assetLayoutId) + '&'

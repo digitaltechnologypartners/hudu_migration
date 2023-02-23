@@ -5,13 +5,14 @@ import json
 from sqlalchemy import text
 import requests
 import logging
-from ..utils import getExportDB,getManageDB,getExistingRecords,headers,rateLimiter,getQuery,APILog
+from ..utils import getExportDB,getManageDB,getExistingRecords,headers,rateLimiter,getQuery,APILog,writeLeftovers
 
 cfg = ConfigParser()
 cfg.read('./config/config.ini')
 
 BASE_URL = cfg['API']['BASE_URL']
 TYPE_BLACKLIST = cfg['COMPANIES']['TYPE_BLACKLIST'].split('\n,')
+EXCLUSIVE_TYPE_BLAKCLIST = cfg['COMPANIES']['EXCLUSIVE_TYPE_BLACKLIST']
 
 ENDPOINT = 'companies'
 
@@ -43,7 +44,6 @@ def xRef(source, orgsDF):
             FROM v_rpt_Company com""")
         manageWebsites = pd.read_sql(manageWebsitesQuery,con=getManageDB())
         orgsDF = pd.merge(orgsDF, manageWebsites, on="name", how="left")
-    print(len(orgsDF.index))
     return orgsDF
 
 def chkTypeBlackList(org):
@@ -54,13 +54,16 @@ def chkTypeBlackList(org):
             if companyType in TYPE_BLACKLIST:
                 keep = False
                 logging.warning('Found type ' + companyType + ' in org ' + org['name'] + '. Org was dropped from migration.')
+        if len(companyTypes) == 1 and companyTypes[0] in EXCLUSIVE_TYPE_BLAKCLIST:
+            keep = False
     except:
         logging.warning('Company: ' + org['name'] + ' has no organization type(s) specified.')
     return keep
 
 def rmNonClients(organizations):
     orgs = [org for org in organizations if chkTypeBlackList(org)]
-    return orgs
+    nonOrgs = [org for org in organizations if not chkTypeBlackList(org)]
+    return orgs,nonOrgs
 
 def parseOrgsJson(organizations):
     companies = []
@@ -111,9 +114,10 @@ def createCompanies(source,query,xref):
     if xref:
         orgsDF = xRef(source, orgsDF)
     orgsJson = getOrgsJson(orgsDF)
-    cleanedOrgs = rmNonClients(orgsJson)
+    cleanedOrgs,leftovers = rmNonClients(orgsJson)
+    writeLeftovers(leftovers,'companies')
     companies = parseOrgsJson(cleanedOrgs)       
     existingCompanies = getExistingRecords(ENDPOINT, namesonly=True)
-
     for company in companies:
         createCompany(company,existingCompanies,url)
+    
