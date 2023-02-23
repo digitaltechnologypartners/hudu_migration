@@ -70,7 +70,8 @@
                 },
                 {
                     "label":"Zip",
-                    "field_type":"Number"
+                    "field_type":"Number",
+                    "show_in_list": "true"
                 },
                 {
                     "label":"Primary_Phone",
@@ -128,7 +129,7 @@
         },
         {
             "name":"Router/Firewall",
-            "icon":"far fa-block-brick-fire",
+            "icon":"fas fa-road",
             "fields":[
                 {
                     "label":"Make",
@@ -143,7 +144,6 @@
                 "IP",
                 "Model",
                 "isVM",
-                "isHypervisor",
                 "VM Host"
             ]
         },
@@ -249,7 +249,7 @@
         },
         {
             "name":"Surveillance System",
-            "icon":"far fa-camera-cctv",
+            "icon":"fas fa-video",
             "fields":[
                 {
                     "label":"Make",
@@ -277,6 +277,272 @@
                 "Serial",
                 "IP",
                 "Model"
+            ]
+        },
+        {
+            "name":"CCTV",
+            "icon":"fas fa-closed-captioning",
+            "fields":[
+                {
+                    "label":"Playback Source Description",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Modulator Info",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                }
+            ],
+            "common_fields":[
+                "Location"
+            ]
+        },
+        {
+            "name":"Ambient Audio",
+            "icon":"fas fa-music",
+            "fields":[
+                {
+                    "label":"Playback Device",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Amp Type",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Speaker Type(s)",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Volume Control Type(s)",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                }
+            ],
+            "common_fields":[
+                "Location"
+            ]
+        },
+        {
+            "name":"Dental Equipment",
+            "icon":"fas fa-tooth",
+            "fields":[
+                {
+                    "label":"Make",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Type",
+                    "field_type":"Dropdown",
+                    "options": "CT\r\nMill\r\nPan\r\nSensor\r\nOther",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Vendor Info",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                }
+            ],
+            "common_fields":[
+                "Location",
+                "Serial",
+                "IP",
+                "Model"
+            ]
+        },
+        {
+            "name":"NAS",
+            "icon":"fas fa-hard-drive",
+            "fields":[
+                {
+                    "label":"Make",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Capacity",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Use Case/Description",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                }
+            ],
+            "common_fields":[
+                "Location",
+                "Serial",
+                "IP",
+                "Model"
+            ]
+        },
+        {
+            "name":"Software",
+            "icon":"fas fa-circle-play",
+            "fields":[
+                {
+                    "label":"Vendor Info",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Type",
+                    "options": "Imaging\r\nPractice Management\r\nRemote Access\r\nOther",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"isLegacy",
+                    "field_type":"CheckBox",
+                    "show_in_list": "true"
+                }
+            ],
+            "common_fields":[
+                "Location",
+                "Model"
+            ]
+        },
+        {
+            "name":"Power Management",
+            "icon":"fas fa-plug-circle-bolt",
+            "fields":[
+                {
+                    "label":"Make",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Vendor Info",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Access URL",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                }
+            ],
+            "common_fields":[
+                "Location",
+                "Model",
+                "IP",
+                "Serial"
+            ]
+        },
+        {
+            "name":"ISP",
+            "icon":"fas fa-globe",
+            "fields":[
+                {
+                    "label":"Vendor Info",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Account Number",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Account PIN",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Device Access Codes",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"CPE Device Type/Make/Model",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"CPE IP",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Handoff",
+                    "field_type":"Dropdown",
+                    "options": "Coax\r\nCopper Pair\r\nFiber\r\nOther",
+                    "show_in_list": "true"
+                }
+            ],
+            "common_fields":[
+                "Location"
+            ]
+        },
+        {
+            "name":"Office365 Tenant",
+            "icon":"fa-brands fa-windows",
+            "fields":[
+                {
+                    "label":"User has Admin Rights",
+                    "field_type":"CheckBox",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Has MFA Partially Deployed",
+                    "field_type":"CheckBox",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Has Security Defaults Enabled",
+                    "field_type":"CheckBox",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Has IP Restrictions in Place",
+                    "field_type":"CheckBox",
+                    "show_in_list": "true"
+                }
+            ],
+            "common_fields":[
+                "Location"
+            ]
+        },
+        {
+            "name":"iDRAC",
+            "icon":"fas fa-power-off",
+            "fields":[
+                {
+                    "label":"Associated Machine",
+                    "field_type":"AssetTag",
+                    "linkable_id":"Server",
+                    "show_in_list": "true",
+                    "hint": "This is the machine this iDRAC is connected to"
+                },
+                {
+                    "label":"License Key",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Has Tunnel",
+                    "field_type":"CheckBox",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Local IP",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                },
+                {
+                    "label":"Natted IP",
+                    "field_type":"Text",
+                    "show_in_list": "true"
+                }
+            ],
+            "common_fields":[
+                "Location"
             ]
         }
     ]
