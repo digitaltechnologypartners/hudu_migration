@@ -1,15 +1,25 @@
 import os
+import click
 import json
 import pandas as pd
 import requests
 import logging
-from configparser import ConfigParser
-from ..utils import getQuery,getExportDB,getAssetLayoutAndID,getExistingRecords,rateLimiter,headers,APILog,writeLeftovers
+from hudumig.utils import getQuery,getExportDB,getExistingRecords,rateLimiter,APILog,stackLog,writeLeftovers
+from hudumig.settings import BASE_URL,HEADERS
 
-cfg = ConfigParser()
-cfg.read('./config/config.ini')
-
-BASE_URL = cfg['API']['BASE_URL']
+def getAssetLayoutAndID(layoutName):
+    layoutID = None
+    assetLayout = None
+    try:
+        layouts = getExistingRecords('asset_layouts')
+        for layout in layouts:
+            if layout['name'] == layoutName:
+                layoutID = layout['id']
+                assetLayout = layout
+        return layoutID, assetLayout
+    except Exception as e:
+        stackLog(e,'get asset layout id')
+        click.echo('Got an error attempting to get asset layout id. Check the logs.')
 
 def getAssetsDF(query):
     connection = getExportDB()
@@ -88,15 +98,14 @@ def createAsset(asset,assettype,companyIDs):
         data = {
             "asset":asset
         }
-        r = requests.post(url,headers=headers,json=data)
+        r = requests.post(url,headers=HEADERS,json=data)
         print(assettype + ' asset: '+ asset['name'] + ': ' + str(r.status_code) + ' ' + r.reason)
         if r.status_code != 200:
             APILog(assettype + ' asset',asset['name'],'error',url=url,data=data,response=r)
         else:
             APILog(assettype + ' asset',asset['name'],'info',url=None,data=None,response=r)
     
-def createAssets(assettype,query):
-    layoutId,layout = getAssetLayoutAndID(assettype)
+def createAssets(layoutId,layout,assettype,query):
     assetsDF = getAssetsDF(query)
     schema = getSchema(layout)
     checkSchema(schema,assetsDF)

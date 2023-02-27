@@ -1,6 +1,4 @@
-import os
 import click
-from configparser import ConfigParser
 import requests
 import logging
 import json
@@ -8,24 +6,7 @@ import pandas as pd
 from sqlalchemy import create_engine,text
 from ratelimit import limits, sleep_and_retry
 import traceback
-
-MINUTE = 60
-MAX_CALLS = 300
-
-cfg = ConfigParser()
-cfg.read('./config/config.ini')
-
-GLUE_DB_CON_STR = cfg['DATABASE']['GLUE_DB_CON_STR']
-MANG_DB_CON_STR = cfg['DATABASE']['MANG_DB_CON_STR']
-LEFTOVERS_DB_CON_STR = cfg['DATABASE']['LEFTOVERS_DB_CON_STR']
-
-GLUE_EXPT_PATH = cfg['DATABASE']['GLUE_EXPT_PATH']
-BASE_URL = cfg['API']['BASE_URL']
-API_KEY = cfg['API']['API_KEY']
-
-headers = {
-    'x-api-key':API_KEY,
-}
+from hudumig.settings import EXPORT_CON_STR,MANG_DB_CON_STR,LEFTOVERS_DB_CON_STR,BASE_URL,HEADERS,MAX_CALLS,MINUTE
 
 def getResponseRequestType(response):
     type = str(response.request)
@@ -58,7 +39,7 @@ def rateLimiter():
     pass
 
 def getExportDB():
-    engine = create_engine(GLUE_DB_CON_STR)
+    engine = create_engine(EXPORT_CON_STR)
     con = engine.connect().execution_options(isolation_level="AUTOCOMMIT")
     return con
 
@@ -76,15 +57,6 @@ def getQuery(sqlFile):
     with open(sqlFile) as file:
         query = text(file.read())
     return query
-
-def loadExpDb(path):
-    for file in os.listdir(path):
-        if file.endswith(".csv"):
-            df = pd.read_csv(open(path + '/' + file))
-            tablename = os.path.splitext(file)[0]
-            connection = getExportDB()
-            df.to_sql(tablename,con=connection,if_exists='replace',index=False)
-            print(file + ' OK')
 
 def writeLeftovers(jsonObj,tablename,flatten=False):
     connection = getLeftoversDB()
@@ -106,7 +78,7 @@ def getExistingRecords(endpoint, namesonly=False):
     while recordsResultsCount == 25:
         rateLimiter()
         url = BASE_URL + endpointpage + str(pagenum)
-        r = requests.get(url,headers=headers)
+        r = requests.get(url,headers=HEADERS)
         if r.status_code == 200:
             if endpoint.endswith('&'):
                 endpoint = endpoint[:(endpoint.find('?'))]
@@ -134,17 +106,3 @@ def writeJson(jsonData, file):
     obj = json.dumps(jsonData, indent=4)
     with open(file, "w") as outfile:
         outfile.write(obj)
-
-def getAssetLayoutAndID(layoutName):
-    layoutID = None
-    assetLayout = None
-    try:
-        layouts = getExistingRecords('asset_layouts')
-        for layout in layouts:
-            if layout['name'] == layoutName:
-                layoutID = layout['id']
-                assetLayout = layout
-        return layoutID, assetLayout
-    except Exception as e:
-        stackLog(e,'get asset layout id')
-        click.echo('Got an error attempting to get asset layout id. Check the logs.')

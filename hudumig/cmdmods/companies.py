@@ -1,18 +1,11 @@
 import os
-from configparser import ConfigParser
 import pandas as pd
 import json
 from sqlalchemy import text
 import requests
 import logging
-from ..utils import getExportDB,getManageDB,getExistingRecords,headers,rateLimiter,getQuery,APILog,writeLeftovers
-
-cfg = ConfigParser()
-cfg.read('./config/config.ini')
-
-BASE_URL = cfg['API']['BASE_URL']
-TYPE_BLACKLIST = cfg['COMPANIES']['TYPE_BLACKLIST'].split('\n,')
-EXCLUSIVE_TYPE_BLAKCLIST = cfg['COMPANIES']['EXCLUSIVE_TYPE_BLACKLIST']
+from hudumig.utils import getExportDB,getManageDB,getExistingRecords,rateLimiter,getQuery,APILog,writeLeftovers
+from hudumig.settings import BASE_URL,TYPE_BLACKLIST,EXCLUSIVE_TYPE_BLACKLIST,HEADERS
 
 ENDPOINT = 'companies'
 
@@ -54,7 +47,7 @@ def chkTypeBlackList(org):
             if companyType in TYPE_BLACKLIST:
                 keep = False
                 logging.warning('Found type ' + companyType + ' in org ' + org['name'] + '. Org was dropped from migration.')
-        if len(companyTypes) == 1 and companyTypes[0] in EXCLUSIVE_TYPE_BLAKCLIST:
+        if len(companyTypes) == 1 and companyTypes[0] in EXCLUSIVE_TYPE_BLACKLIST:
             keep = False
     except:
         logging.warning('Company: ' + org['name'] + ' has no organization type(s) specified.')
@@ -97,7 +90,7 @@ def createCompany(company, existingCompanies, url):
         data = {
             "company": company
         }
-        r = requests.post(url, headers=headers, json=data)
+        r = requests.post(url, headers=HEADERS, json=data)
         print(company['name'] + ' ' + str(r.status_code) + ' ' + r.reason)
         if r.status_code != 200:
             APILog(ENDPOINT,company['name'],'error',url=url,data=data,response=r)

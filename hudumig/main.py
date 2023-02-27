@@ -1,32 +1,24 @@
 import click
-from configparser import ConfigParser
 import logging
-from .utils import getExistingRecords, writeJson, stackLog, getAssetLayoutAndID,loadExpDb
-from .modules.layouts import createlayouts
-from .modules.companies import createCompanies
-from .modules.assets import createAssets
-from sys import exit
-
-
-cfg = ConfigParser()
-cfg.read('./config/config.ini')
-ASSET_LAYOUTS_JSON = cfg['ASSET_LAYOUTS']['ASSET_LAYOUTS_JSON']
-ASSET_LAYOUTS_OUTPUT = cfg['ASSET_LAYOUTS']['ASSET_LAYOUTS_OUTPUT']
-COMPANIES_OUTPUT = cfg['COMPANIES']['COMPANIES_OUTPUT']
-COMPANIES_QUERY = cfg['COMPANIES']['COMPANIES_QUERY']
-GLUE_EXPT_PATH = cfg['DATABASE']['GLUE_EXPT_PATH']
+from hudumig.utils import getExistingRecords, writeJson, stackLog
+from hudumig.settings import ASSET_LAYOUTS_JSON,ASSET_LAYOUTS_OUTPUT,COMPANIES_OUTPUT,COMPANIES_QUERY,GLUE_EXPT_PATH
+from hudumig.cmdmods.layouts import createlayouts
+from hudumig.cmdmods.companies import createCompanies
+from hudumig.cmdmods.assets import createAssets,getAssetLayoutAndID
+from hudumig.cmdmods.config import loadExpDb,updateConfigVars
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='migrator.log', filemode='a', level=logging.INFO, format='%(asctime)s : %(levelname)s : %(message)s ', datefmt='%m/%d/%Y %I:%M:%S %p')
+logging.basicConfig(filename='hudumig.log', filemode='a', level=logging.INFO, format='%(asctime)s : %(levelname)s : %(message)s ', datefmt='%m/%d/%Y %I:%M:%S %p')
 
 @click.group("cli")
 def cli():
     pass
 
 @cli.command()
+@click.option('-c','--configvar',nargs=2,type=str,multiple=True,help='Modify varibles in the configuration file.')
 @click.option('-l','--loadexpdb',is_flag=True,help='Load the export DB with CSVs found in the ITGlue export folder.')
 @click.option('-d','--expdbpath',default=GLUE_EXPT_PATH,show_default=True,help='Declare the path in which to look for the export files.')
-def config(loadexpdb,expdbpath):
+def config(configvar,loadexpdb,expdbpath):
     """Configure various aspects of hudumig."""
     if loadexpdb:
         try:
@@ -34,8 +26,13 @@ def config(loadexpdb,expdbpath):
         except Exception as e:
             stackLog(e,'load export db')
             click.echo('Got an error attempting to load the export database. Check the logs.')
-
-    if not loadexpdb:
+    if configvar:
+        try:
+            updateConfigVars(configvar)
+        except Exception as e:
+            stackLog(e,'update config variables')
+            click.echo('Got an error attempting to update config variables. Check the logs.')
+    if not loadexpdb and not configvar:
         click.echo('No option was selected. Enter "hudumig config --help" to see available options.')
 
 @cli.command()
@@ -108,13 +105,13 @@ def assets(create,output,assettype):
     You must specify the Asset Type you wish to work with by exact case sensitive name as it appears in Hudu.
     
     You must also specify the query file each time you use the --create option, and the output file each time you use the --output option."""
-    assetLayoutId,asset = getAssetLayoutAndID(assettype)
+    assetLayoutId,layout = getAssetLayoutAndID(assettype)
     if assetLayoutId == None:
         click.echo('Asset Type ' + assettype + ' not found.')
     else:
         if create:
             try:
-                createAssets(assettype,create)
+                createAssets(assetLayoutId,layout,assettype,create)
             except Exception as e:
                 stackLog(e,'create ' + assettype + ' assets')
                 click.echo('Got an error attempting to create ' + assettype + ' assets. Check the logs.')
@@ -137,3 +134,7 @@ def domains():
 @cli.command()
 def passwords():
     click.echo('Passwords functionality not yet created.')
+
+@cli.command()
+def attachments():
+    click.echo('Attachments functionality not yet created.')

@@ -2,13 +2,8 @@ import os
 import json
 import copy
 import requests
-from configparser import ConfigParser
-from ..utils import getExistingRecords, headers, APILog
-
-cfg = ConfigParser()
-cfg.read('./config/config.ini')
-
-BASE_URL = cfg['API']['BASE_URL']
+from hudumig.utils import getExistingRecords, APILog
+from hudumig.settings import BASE_URL,HEADERS
 
 ENDPOINT = 'asset_layouts'
 
@@ -61,7 +56,7 @@ def updateSelfRefs(selfrefs):
         data = {
             "asset_layout": selfref
         }
-        r = requests.put(url, headers=headers, json=data)
+        r = requests.put(url, headers=HEADERS, json=data)
         print(selfref['name'] + ' update status: ' + str(r.status_code) + ': ' + r.reason)
         if r.status_code != 200:
             APILog(ENDPOINT,selfref['name'],'error',url=url,data=data,response=r)
@@ -92,7 +87,7 @@ def createlayouts(filepath):
             data = {
                 "asset_layout": layout
             }
-            r = requests.post(url, headers=headers, json=data)
+            r = requests.post(url, headers=HEADERS, json=data)
             print(layout['name'] + ' ' + str(r.status_code) + ' ' + r.reason)
             if r.status_code != 200:
                 APILog(ENDPOINT,layout['name'],'error',url=url,data=data,response=r)
