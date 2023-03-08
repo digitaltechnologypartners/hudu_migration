@@ -4,7 +4,7 @@ import json
 import pandas as pd
 import requests
 import logging
-from hudumig.utils import getQuery,getExportDB,getExistingRecords,rateLimiter,APILog,stackLog,writeLeftovers
+from hudumig.utils import getQuery,getExportDB,getExistingRecords,rateLimiter,APILog,stackLog,writeLeftovers,writeJson
 from hudumig.settings import BASE_URL,HEADERS
 
 def getAssetLayoutAndID(layoutName):
@@ -59,7 +59,7 @@ def cleanAssets(assetsDF,assettype):
     return assetsJson,leftovers
 
 def parseAssetsJson(assetsJson,assetLayoutID):
-    parsedAssests = []
+    parsedAssets = []
     for record in assetsJson:
         asset = {}
         asset['company'] = record['company']
@@ -69,8 +69,9 @@ def parseAssetsJson(assetsJson,assetLayoutID):
         record.pop('company')
         record.pop('name')
         asset['custom_fields'].append(record)
-        parsedAssests.append(asset)
-    return parsedAssests
+        parsedAssets.append(asset)
+    writeJson(parsedAssets, './config/output/parsedassets.json')
+    return parsedAssets
 
 def getCompanyIDs():
     companyIDs = {}
@@ -87,10 +88,10 @@ def getCompanyID(asset,companyIDs):
             companyID = value
     if companyID == 0:
         logging.warning('company: ' + company + ' not found in Hudu. Asset will be discarded')
-    return companyID,asset
+    return company,companyID,asset
 
 def createAsset(asset,assettype,companyIDs):
-    companyID,asset = getCompanyID(asset,companyIDs)
+    company,companyID,asset = getCompanyID(asset,companyIDs)
     if companyID != 0:
         rateLimiter()
         endpoint = 'companies/' + str(companyID) + '/assets'
@@ -99,11 +100,11 @@ def createAsset(asset,assettype,companyIDs):
             "asset":asset
         }
         r = requests.post(url,headers=HEADERS,json=data)
-        print(assettype + ' asset: '+ asset['name'] + ': ' + str(r.status_code) + ' ' + r.reason)
+        print(assettype + ' asset: '+ asset['name'] + ' for company ' + company + ': ' + str(r.status_code) + ' ' + r.reason)
         if r.status_code != 200:
-            APILog(assettype + ' asset',asset['name'],'error',url=url,data=data,response=r)
+            APILog(assettype + ' asset',asset['name'] + ' for company ' + company,'error',url=url,data=data,response=r)
         else:
-            APILog(assettype + ' asset',asset['name'],'info',url=None,data=None,response=r)
+            APILog(assettype + ' asset',asset['name'] + ' for company ' + company,'info',url=None,data=None,response=r)
     
 def createAssets(layoutId,layout,assettype,query):
     assetsDF = getAssetsDF(query)

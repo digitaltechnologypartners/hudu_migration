@@ -4,7 +4,7 @@ import json
 from sqlalchemy import text
 import requests
 import logging
-from hudumig.utils import getExportDB,getManageDB,getExistingRecords,rateLimiter,getQuery,APILog,writeLeftovers
+from hudumig.utils import getExportDB,getManageDB,getExistingRecords,rateLimiter,getQuery,APILog,writeLeftovers,writeJson
 from hudumig.settings import BASE_URL,TYPE_BLACKLIST,EXCLUSIVE_TYPE_BLACKLIST,HEADERS
 
 ENDPOINT = 'companies'

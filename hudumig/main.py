@@ -36,10 +36,10 @@ def config(configvar,loadexpdb,expdbpath):
         click.echo('No option was selected. Enter "hudumig config --help" to see available options.')
 
 @cli.command()
-@click.option('-c','--create', is_flag=True, help='Create asset layouts from [LAYOUTSJSON]')
-@click.option('-o','--output', is_flag=True, help='Output existing layouts in Json to [OUTPUTFILE] (occurs after creation if called in same command)')
-@click.option('-l','--layoutsjson', default=ASSET_LAYOUTS_JSON, show_default=True, help='Declare file from which to read layouts and then write them')
-@click.option('-f','--outputfile', default=ASSET_LAYOUTS_OUTPUT, show_default=True, help='Declare file to output existing layouts to')
+@click.option('-c','--create', is_flag=True, help='Create asset layouts from [LAYOUTSJSON].')
+@click.option('-o','--output', is_flag=True, help='Output existing layouts in Json to [OUTPUTFILE] (occurs after creation if called in same command).')
+@click.option('-l','--layoutsjson', default=ASSET_LAYOUTS_JSON, show_default=True, help='Declare file from which to read layouts to write to hudu.')
+@click.option('-f','--outputfile', default=ASSET_LAYOUTS_OUTPUT, show_default=True, help='Declare file to output existing layouts to.')
 def layouts(create,output,layoutsjson,outputfile):
     """Create asset layouts and/or output existing layouts to a json file."""
     endpoint='asset_layouts'

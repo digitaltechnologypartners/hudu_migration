@@ -20,8 +20,8 @@ ASSET_LAYOUTS_OUTPUT = cfg['ASSET_LAYOUTS']['asset_layouts_output']
 
 COMPANIES_QUERY = cfg['COMPANIES']['companies_query']
 COMPANIES_OUTPUT = cfg['COMPANIES']['COMPANIES_OUTPUT']
-TYPE_BLACKLIST = cfg['COMPANIES']['companies_output'].split('\n,')
-EXCLUSIVE_TYPE_BLACKLIST = cfg['COMPANIES']['type_blacklist'].split('\n,')
+TYPE_BLACKLIST = cfg['COMPANIES']['companies_output'].split(',\n')
+EXCLUSIVE_TYPE_BLACKLIST = cfg['COMPANIES']['type_blacklist'].split(',\n')
 
 ### API Call Variables
 HEADERS = {
