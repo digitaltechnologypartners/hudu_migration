@@ -65,7 +65,7 @@
                 {
                     "label":"State",
                     "field_type":"Dropdown",
-                    "options": "AL\r\nAZ\r\nFL\r\nGA\r\nID\r\nKY\r\nNC\r\nSC\r\nOK\r\nTN",
+                    "options": "Alabama\r\nArizona\r\nFlorida\r\nGeorgia\r\nIdaho\r\nKentucky\r\nNorth Carolina\r\nSouth Carolina\r\nOklahoma\r\nTennessee",
                     "show_in_list": "true"
                 },
                 {
