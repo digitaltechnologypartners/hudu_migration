@@ -1,7 +1,7 @@
 import click
 import logging
 from hudumig.utils import getExistingRecords, writeJson, stackLog
-from hudumig.settings import ASSET_LAYOUTS_JSON,ASSET_LAYOUTS_OUTPUT,COMPANIES_OUTPUT,COMPANIES_QUERY,GLUE_EXPT_PATH,CONFIG_PATH,OUTPUT_PATH,SQL_PATH
+from hudumig.settings import ASSET_LAYOUTS_JSON,ASSET_LAYOUTS_OUTPUT,COMPANIES_OUTPUT,COMPANIES_QUERY,GLUE_EXPT_PATH,OUTPUT_PATH,SQL_PATH
 from hudumig.cmdmods.layouts import createlayouts
 from hudumig.cmdmods.companies import createCompanies
 from hudumig.cmdmods.assets import createAssets,getAssetLayoutAndID

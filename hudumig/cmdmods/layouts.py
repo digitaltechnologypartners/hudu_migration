@@ -14,7 +14,7 @@ def parseLayouts(layouts):
     assetLayouts = layouts["asset_layouts"]
 
     for assetLayout in assetLayouts:
-        assetLayout["color"] = "#000000"
+        assetLayout["color"] = "#0d0a0b"
         assetLayout["icon_color"] = "#FFFFFF"
         assetLayout["active"] = True
 
