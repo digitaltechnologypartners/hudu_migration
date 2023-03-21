@@ -1,5 +1,6 @@
 select
 	archived
+	,configuration_status as status
 	,name
 	,organization as company
 	,manufacturer as make
@@ -12,7 +13,6 @@ select
     	else false end as isVM
     ,false as "isHypervisor"
     ,"" as "VM Host"
-    ,configuration_status as status
 FROM   
 	configurations
 where

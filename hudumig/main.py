@@ -1,7 +1,7 @@
 import click
 import logging
 from hudumig.utils import getExistingRecords, writeJson, stackLog
-from hudumig.settings import ASSET_LAYOUTS_JSON,ASSET_LAYOUTS_OUTPUT,COMPANIES_OUTPUT,COMPANIES_QUERY,GLUE_EXPT_PATH
+from hudumig.settings import ASSET_LAYOUTS_JSON,ASSET_LAYOUTS_OUTPUT,COMPANIES_OUTPUT,COMPANIES_QUERY,GLUE_EXPT_PATH,CONFIG_PATH,OUTPUT_PATH,SQL_PATH
 from hudumig.cmdmods.layouts import createlayouts
 from hudumig.cmdmods.companies import createCompanies
 from hudumig.cmdmods.assets import createAssets,getAssetLayoutAndID
@@ -10,7 +10,7 @@ from hudumig.cmdmods.config import loadExpDb,updateConfigVars
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename='hudumig.log', filemode='a', level=logging.INFO, format='%(asctime)s : %(levelname)s : %(message)s ', datefmt='%m/%d/%Y %I:%M:%S %p')
 
-@click.group("cli")
+@click.group("cli",chain=True)
 def cli():
     pass
 
@@ -111,12 +111,14 @@ def assets(create,output,assettype):
     else:
         if create:
             try:
+                create = SQL_PATH + create
                 createAssets(assetLayoutId,layout,assettype,create)
             except Exception as e:
                 stackLog(e,'create ' + assettype + ' assets')
                 click.echo('Got an error attempting to create ' + assettype + ' assets. Check the logs.')
         if output:
             try:
+                output = OUTPUT_PATH + output
                 endpoint = 'assets?asset_layout_id=' + str(assetLayoutId) + '&'
                 assets = getExistingRecords(endpoint)
                 writeJson(assets,output)
