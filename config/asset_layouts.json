@@ -53,7 +53,7 @@
             "icon":"fas fa-map-marker-alt",
             "fields":[
                 {
-                    "label":"Street_Address",
+                    "label":"Street Address",
                     "field_type":"Text",
                     "show_in_list": "true"
                 },
@@ -74,7 +74,7 @@
                     "show_in_list": "true"
                 },
                 {
-                    "label":"Primary_Phone",
+                    "label":"Primary Phone",
                     "field_type":"Phone",
                     "show_in_list": "true"
                 }

@@ -1,10 +1,11 @@
 select company
-	,MAX(name) as name
-	,Street_Address
+	,name
+	,'No' AS archived
+	,Street_Address AS 'Street Address'
 	,city 
 	,State
 	,Zip
-	,Primary_Phone
+	,Primary_Phone AS 'Primary Phone'
 from (
 	select organization as company
 		,name

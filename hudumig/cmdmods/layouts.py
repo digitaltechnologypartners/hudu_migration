@@ -2,7 +2,7 @@ import os
 import json
 import copy
 import requests
-from hudumig.utils import getExistingRecords, APILog
+from hudumig.utils import getExistingRecords, APILog,rateLimiter
 from hudumig.settings import BASE_URL,HEADERS
 
 ENDPOINT = 'asset_layouts'
@@ -56,6 +56,7 @@ def updateSelfRefs(selfrefs):
         data = {
             "asset_layout": selfref
         }
+        rateLimiter()
         r = requests.put(url, headers=HEADERS, json=data)
         print(selfref['name'] + ' update status: ' + str(r.status_code) + ': ' + r.reason)
         if r.status_code != 200:
@@ -70,8 +71,8 @@ def createlayouts(filepath):
     layoutsjson = json.load(file)
     layouts = parseLayouts(layoutsjson)
     selfrefs = []
+    existingLayouts = getExistingRecords(ENDPOINT, namesonly=True)
     for layout in layouts:
-        existingLayouts = getExistingRecords(ENDPOINT, namesonly=True)
         if layout['name'] not in existingLayouts:
             fields = layout['fields']
             for field in fields:
@@ -87,6 +88,7 @@ def createlayouts(filepath):
             data = {
                 "asset_layout": layout
             }
+            rateLimiter()
             r = requests.post(url, headers=HEADERS, json=data)
             print(layout['name'] + ' ' + str(r.status_code) + ' ' + r.reason)
             if r.status_code != 200:

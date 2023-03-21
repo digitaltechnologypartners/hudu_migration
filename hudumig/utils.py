@@ -14,16 +14,17 @@ def getResponseRequestType(response):
     return type
 
 def APILog(endpoint, entityname, logtype, url=None, data=None, response=None):
+    try:
+        errorContent = json.dumps(response.json(), indent=4)
+    except:
+        errorContent = response.text
+    
     if logtype == 'error':
-        try:
-            errorContent = json.dumps(response.json(), indent=4)
-        except:
-            errorContent = response.text
         logging.error(endpoint + ': ' + entityname + ':' + getResponseRequestType(response) + ' failed: ' + str(response.status_code) + ': ' + response.reason + '\n' + url + '\n' + json.dumps(data, indent=4) + '\n' + errorContent)
     elif logtype == 'warning':
         logging.warning(endpoint + ': ' + entityname + ': already exists. No HTTP request was made.')
     elif logtype == 'info':
-        logging.info(endpoint + ': ' + entityname + ':' + getResponseRequestType(response) + ' succeeded: ' + str(response.status_code) + ': ' + response.reason)
+        logging.info(endpoint + ': ' + entityname + ':' + getResponseRequestType(response) + ' succeeded: ' + str(response.status_code) + ': ' + response.reason + json.dumps(data, indent=4) + '\n' + errorContent)
 
 def getErrorClass(error):
     eClass = str(error.__class__)
@@ -67,7 +68,7 @@ def writeLeftovers(jsonObj,tablename,flatten=False):
         df = pd.json_normalize(df)
     df.to_sql(tablename,con=connection,if_exists='replace',index=False)
 
-def getExistingRecords(endpoint, namesonly=False):
+def getExistingRecords(endpoint, namesonly=False, data=None):
     if not endpoint.endswith('&'):
         endpointpage = endpoint + '?page='
     else:
@@ -78,7 +79,7 @@ def getExistingRecords(endpoint, namesonly=False):
     while recordsResultsCount == 25:
         rateLimiter()
         url = BASE_URL + endpointpage + str(pagenum)
-        r = requests.get(url,headers=HEADERS)
+        r = requests.get(url,headers=HEADERS,data=data)
         if r.status_code == 200:
             if endpoint.endswith('&'):
                 endpoint = endpoint[:(endpoint.find('?'))]
