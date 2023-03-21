@@ -46,9 +46,10 @@ def chkTypeBlackList(org):
         for companyType in companyTypes:
             if companyType in TYPE_BLACKLIST:
                 keep = False
+            if len(companyTypes) == 1 and companyType in EXCLUSIVE_TYPE_BLACKLIST:
+                keep = False
+            if keep == False:
                 logging.warning('Found type ' + companyType + ' in org ' + org['name'] + '. Org was dropped from migration.')
-        if len(companyTypes) == 1 and companyTypes[0] in EXCLUSIVE_TYPE_BLACKLIST:
-            keep = False
     except:
         logging.warning('Company: ' + org['name'] + ' has no organization type(s) specified.')
     return keep
