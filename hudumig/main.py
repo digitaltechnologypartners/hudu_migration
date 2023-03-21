@@ -1,14 +1,15 @@
 import click
 import logging
 from hudumig.utils import getExistingRecords, writeJson, stackLog
-from hudumig.settings import ASSET_LAYOUTS_JSON,ASSET_LAYOUTS_OUTPUT,COMPANIES_OUTPUT,COMPANIES_QUERY,GLUE_EXPT_PATH,OUTPUT_PATH,SQL_PATH
+from hudumig.settings import ASSET_LAYOUTS_JSON,ASSET_LAYOUTS_OUTPUT,COMPANIES_OUTPUT,COMPANIES_QUERY,GLUE_EXPT_PATH,OUTPUT_PATH,SQL_PATH,DEFAULT_LOG_FILE,WEBSITES_OUTPUT,WEBSITES_QUERY
 from hudumig.cmdmods.layouts import createlayouts
 from hudumig.cmdmods.companies import createCompanies
 from hudumig.cmdmods.assets import createAssets,getAssetLayoutAndID
 from hudumig.cmdmods.config import loadExpDb,updateConfigVars
+from hudumig.cmdmods.websites import createWebsites
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='hudumig.log', filemode='a', level=logging.INFO, format='%(asctime)s : %(levelname)s : %(message)s ', datefmt='%m/%d/%Y %I:%M:%S %p')
+logging.basicConfig(filename=DEFAULT_LOG_FILE, filemode='a', level=logging.INFO, format='%(asctime)s : %(levelname)s : %(message)s ', datefmt='%m/%d/%Y %I:%M:%S %p')
 
 @click.group("cli",chain=True)
 def cli():
@@ -130,8 +131,30 @@ def assets(create,output,assettype):
             click.echo('No option was selected. Enter "hudumig assets --help" to see available options.')
 
 @cli.command()
-def domains():
-    click.echo('Domains functionality not yet created.')
+@click.option('-c','--create', is_flag=True, help='Create websites from [QUERY].')
+@click.option('-o','--output', is_flag=True, help='Output existing websites in Json to [OUTPUTFILE] (occurs after creation if called in same command).')
+@click.option('-q','--query', default=WEBSITES_QUERY, show_default=True, help='Declare file from which to read websites to write to hudu.')
+@click.option('-f','--outputfile', default=WEBSITES_OUTPUT, show_default=True, help='Declare file to output existing websites to.')
+def websites(create,output,query,outputfile):
+    """Create websites and/or output existing websites to a json file."""
+    endpoint = 'websites'
+    if create:
+        try:
+            createWebsites(query)
+            click.echo('Created websites from ' + query)
+        except Exception as e:
+            stackLog(e,'create websites')
+            click.echo('Got an error attempting to create websites. Check the logs.')
+    if output:
+        try:
+            websites = getExistingRecords(endpoint)
+            writeJson(websites,outputfile)
+            click.echo('Existing websites exported to ' + outputfile)
+        except Exception as e:
+            stackLog(e,'output websites')
+            click.echo('Got an error attempting to output websites. Check the logs.')
+    if not output and not create:
+        click.echo('No option was selected. Enter "hudumig websites --help" to see available options.')
 
 @cli.command()
 def passwords():

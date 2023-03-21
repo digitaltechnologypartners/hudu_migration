@@ -1,4 +1,3 @@
-import click
 import requests
 import logging
 import json
@@ -58,6 +57,12 @@ def getQuery(sqlFile):
     with open(sqlFile) as file:
         query = text(file.read())
     return query
+
+def getDf(query):
+    connection = getExportDB()
+    query = getQuery(query)
+    df = pd.read_sql(query,con=connection)
+    return df
 
 def writeLeftovers(jsonObj,tablename,flatten=False):
     connection = getLeftoversDB()

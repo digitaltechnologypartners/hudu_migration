@@ -27,6 +27,11 @@ COMPANIES_OUTPUT = OUTPUT_PATH + cfg['COMPANIES']['companies_output']
 TYPE_BLACKLIST = cfg['COMPANIES']['type_blacklist'].split(',\n')
 EXCLUSIVE_TYPE_BLACKLIST = cfg['COMPANIES']['exclusive_type_blacklist'].split(',\n')
 
+WEBSITES_QUERY = SQL_PATH + cfg['WEBSITES']['websites_query']
+WEBSITES_OUTPUT = OUTPUT_PATH + cfg['WEBSITES']['websites_output']
+
+DEFAULT_LOG_FILE = cfg['LOGGING']['default_log_file']
+
 ### API Call Variables
 HEADERS = {
     'x-api-key':API_KEY

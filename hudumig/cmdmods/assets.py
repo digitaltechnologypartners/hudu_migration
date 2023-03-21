@@ -1,11 +1,9 @@
 import os
-import base64
 import click
 import json
-import pandas as pd
 import requests
 import logging
-from hudumig.utils import getQuery,getExportDB,getExistingRecords,rateLimiter,APILog,stackLog,writeLeftovers,writeJson
+from hudumig.utils import getExistingRecords,rateLimiter,APILog,stackLog,writeLeftovers,getDf
 from hudumig.settings import BASE_URL,HEADERS
 
 def getAssetLayoutAndID(layoutName):
@@ -46,12 +44,6 @@ def getLocation(locationsLookupTable,locName,companyName):
         if location['name'] == locName and location['company_name'] == companyName:
             loc = '[{\"id\":' + str(location['id']) + ',\"url\":\"/a/' + location['slug'] + '\",\"name\":\"' + location['name'] + '\"}]'
             return loc
-
-def getAssetsDF(query):
-    connection = getExportDB()
-    query = getQuery(query)
-    assetsDF = pd.read_sql(query,con=connection)
-    return assetsDF
 
 def getSchema(layout):
     layoutFieldNames = []
@@ -154,7 +146,7 @@ def archiveAsset(assetId,companyId):
         APILog('Archival of asset',str(assetId) + ' for company' + str(companyId),'info',url=None,data=None,response=r)
 
 def createAssets(layoutId,layout,assettype,query):
-    assetsDF = getAssetsDF(query)
+    assetsDF = getDf(query)
     schema = getSchema(layout)
     checkSchema(schema,assetsDF)
     assetsJson,leftovers = cleanAssets(assetsDF,assettype)
