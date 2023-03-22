@@ -4,7 +4,7 @@
             "label":"Location",
             "field_type":"AssetTag",
             "linkable_id":"Location",
-            "show_in_list": "true"
+            "show_in_list":"true"
         },
         {
             "label":"Serial",
@@ -17,34 +17,40 @@
         {
             "label":"Model",
             "field_type":"Text",
-            "show_in_list": "true"
+            "show_in_list":"true"
         },
         {
             "label":"isVM",
             "field_type":"CheckBox",
-            "show_in_list": "true"
+            "show_in_list":"true"
         },
         {
             "label":"isHypervisor",
             "field_type":"CheckBox",
-            "show_in_list": "true"
+            "show_in_list":"true"
         },
         {
             "label":"VM Host",
             "field_type":"AssetTag",
             "linkable_id":"Server",
-            "show_in_list": "true",
+            "show_in_list":"true",
             "hint": "If this is a VM, this is its Hypervisor"
         },
         {
             "label":"isPOE",
             "field_type":"CheckBox",
-            "show_in_list": "true"
+            "show_in_list":"true"
         },
         {
             "label":"isManaged",
             "field_type":"CheckBox",
-            "show_in_list": "true"
+            "show_in_list":"true"
+        },
+        {
+            "label":"Status",
+            "field_type":"Dropdown",
+            "options":"Active\r\nInactive\r\nProvisioning\r\nReserved",
+            "show_in_list":"true"
         }
     ],
     "asset_layouts":[
@@ -53,30 +59,30 @@
             "icon":"fas fa-map-marker-alt",
             "fields":[
                 {
-                    "label":"Street_Address",
+                    "label":"Street Address",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"City",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"State",
                     "field_type":"Dropdown",
                     "options": "Alabama\r\nArizona\r\nFlorida\r\nGeorgia\r\nIdaho\r\nKentucky\r\nNorth Carolina\r\nSouth Carolina\r\nOklahoma\r\nTennessee",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Zip",
                     "field_type":"Number",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
-                    "label":"Primary_Phone",
+                    "label":"Primary Phone",
                     "field_type":"Phone",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[]
@@ -89,10 +95,11 @@
                     "label":"Make",
                     "field_type":"Dropdown",
                     "options": "Dell\r\nHP\r\nLenovo\r\nOther/Whitebox",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[
+                "Status",
                 "Location",
                 "Serial",
                 "IP",
@@ -110,15 +117,16 @@
                     "label":"Make",
                     "field_type":"Dropdown",
                     "options": "Dell\r\nHP\r\nLenovo\r\nMSI\r\nOther/Whitebox",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"isLaptop",
                     "field_type":"CheckBox",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[
+                "Status",
                 "Location",
                 "Serial",
                 "IP",
@@ -135,10 +143,11 @@
                     "label":"Make",
                     "field_type":"Dropdown",
                     "options": "OPNSense\r\nSonicWall\r\nSophos\r\nUntangle\r\nOther",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[
+                "Status",
                 "Location",
                 "Serial",
                 "IP",
@@ -155,10 +164,11 @@
                     "label":"Make",
                     "field_type":"Dropdown",
                     "options": "Cisco\r\nMicrotik\r\nNetgear\r\nTPLink\r\nTrendnet\r\nUniFi\r\nOther",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[
+                "Status",
                 "Location",
                 "Serial",
                 "IP",
@@ -175,15 +185,16 @@
                     "label":"Make",
                     "field_type":"Dropdown",
                     "options": "UniFi\r\nOther",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Specific Location in Office",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[
+                "Status",
                 "Location",
                 "Serial",
                 "IP",
@@ -198,15 +209,16 @@
                     "label":"Make",
                     "field_type":"Dropdown",
                     "options": "Brother\r\nCanon\r\nEpson\r\nHP\r\nLexmark\r\nXerox\r\nOther",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"isManagedbyPrinterCompany",
                     "field_type":"CheckBox",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[
+                "Status",
                 "Location",
                 "Serial",
                 "IP",
@@ -226,21 +238,22 @@
                     "label":"Type",
                     "field_type":"Dropdown",
                     "options": "3CX\r\nAllworx\r\nDTPBX\r\nFreePBX\r\nSnomONE\nOther",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Handset Type",
                     "field_type":"Dropdown",
                     "options": "3CX\r\nAllworx\r\nDTPBX\r\nFreePBX\r\nSnomONE\nOther",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Connectivity Method",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[
+                "Status",
                 "Location",
                 "Serial",
                 "IP",
@@ -254,25 +267,26 @@
                 {
                     "label":"Make",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"isRemotelyAccessed",
                     "field_type":"CheckBox",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"isHikvision",
                     "field_type":"CheckBox",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Has HikConnect Configured",
                     "field_type":"CheckBox",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[
+                "Status",
                 "Location",
                 "Serial",
                 "IP",
@@ -286,15 +300,16 @@
                 {
                     "label":"Playback Source Description",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Modulator Info",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[
+                "Status",
                 "Location"
             ]
         },
@@ -305,25 +320,26 @@
                 {
                     "label":"Playback Device",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Amp Type",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Speaker Type(s)",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Volume Control Type(s)",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[
+                "Status",
                 "Location"
             ]
         },
@@ -334,21 +350,22 @@
                 {
                     "label":"Make",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Type",
                     "field_type":"Dropdown",
                     "options": "CT\r\nMill\r\nPan\r\nSensor\r\nOther",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Vendor Info",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[
+                "Status",
                 "Location",
                 "Serial",
                 "IP",
@@ -362,20 +379,21 @@
                 {
                     "label":"Make",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Capacity",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Use Case/Description",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[
+                "Status",
                 "Location",
                 "Serial",
                 "IP",
@@ -389,21 +407,22 @@
                 {
                     "label":"Vendor Info",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Type",
                     "options": "Imaging\r\nPractice Management\r\nRemote Access\r\nOther",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"isLegacy",
                     "field_type":"CheckBox",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[
+                "Status",
                 "Location",
                 "Model"
             ]
@@ -415,20 +434,21 @@
                 {
                     "label":"Make",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Vendor Info",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Access URL",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[
+                "Status",
                 "Location",
                 "Model",
                 "IP",
@@ -442,41 +462,42 @@
                 {
                     "label":"Vendor Info",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Account Number",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Account PIN",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Device Access Codes",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"CPE Device Type/Make/Model",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"CPE IP",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Handoff",
                     "field_type":"Dropdown",
                     "options": "Coax\r\nCopper Pair\r\nFiber\r\nOther",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[
+                "Status",
                 "Location"
             ]
         },
@@ -487,25 +508,26 @@
                 {
                     "label":"User has Admin Rights",
                     "field_type":"CheckBox",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Has MFA Partially Deployed",
                     "field_type":"CheckBox",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Has Security Defaults Enabled",
                     "field_type":"CheckBox",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Has IP Restrictions in Place",
                     "field_type":"CheckBox",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[
+                "Status",
                 "Location"
             ]
         },
@@ -517,31 +539,32 @@
                     "label":"Associated Machine",
                     "field_type":"AssetTag",
                     "linkable_id":"Server",
-                    "show_in_list": "true",
+                    "show_in_list":"true",
                     "hint": "This is the machine this iDRAC is connected to"
                 },
                 {
                     "label":"License Key",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Has Tunnel",
                     "field_type":"CheckBox",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Local IP",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 },
                 {
                     "label":"Natted IP",
                     "field_type":"Text",
-                    "show_in_list": "true"
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[
+                "Status",
                 "Location"
             ]
         }
