@@ -8,6 +8,7 @@ ENDPOINT = 'websites'
 
 def getCompaniesWebsites():
     companies = getExistingRecords('companies')
+    print('Getting websites from existing companies')
     companiesWebsites = []
     for company in companies:
         if company['website'] is not None and company['website'] != "":
@@ -35,6 +36,7 @@ def checkImport(website,websitesJson):
     return keep
 
 def xrefImportandExisting(websitesJson,companiesWebsites):
+    print('Cross referencing existing comapany websites with import.')
     for cWebsite in companiesWebsites:
         name = uniformifyName(cWebsite['name'])
         cWebsite['name'] = name
@@ -55,9 +57,10 @@ def createWebsite(website,companyIDs):
         r = requests.post(url,headers=HEADERS,json=data)
         print('Website: '+ website['name'] + ' for company ' + company + ': ' + str(r.status_code) + ' ' + r.reason)
         if r.status_code != 200:
-            APILog('Website',website['name'] + ' for company ' + company,'error',url=url,data=data,response=r)
+            logtype = 'error'
         else:
-            APILog('Website',website['name'] + ' for company ' + company,'info',url=None,data=data,response=r)
+            logtype = 'info'
+        APILog('Website',website['name'] + ' for company ' + company,logtype,url=url,data=data,response=r)
 
 def createWebsites(query):
     companyIDs = getCompanyIDs()
@@ -66,6 +69,7 @@ def createWebsites(query):
     companiesWebsites = getCompaniesWebsites()
     websitesJson = xrefImportandExisting(websitesJson,companiesWebsites)
     writeLeftovers(leftovers,ENDPOINT)
+    print('Writing websites.')
     for website in websitesJson:
         createWebsite(website,companyIDs)
 

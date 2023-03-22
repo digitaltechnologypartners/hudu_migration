@@ -8,30 +8,25 @@ from hudumig.settings import BASE_URL,HEADERS
 ENDPOINT = 'asset_layouts'
 
 def parseLayouts(layouts):
+    print('Parsing asset layouts.')
     parsedLayouts = []
-
     commonFields = layouts["common_fields"]
     assetLayouts = layouts["asset_layouts"]
-
     for assetLayout in assetLayouts:
         assetLayout["color"] = "#0d0a0b"
         assetLayout["icon_color"] = "#FFFFFF"
         assetLayout["active"] = True
-
         for field in assetLayout["common_fields"]:
             for commonField in commonFields:
                 if field == commonField["label"]:
                     assetLayout["fields"].append(commonField)
 
         assetLayout.pop("common_fields")
-        
         position = 1
         for layoutField in assetLayout['fields']:
             layoutField["position"] = position
             position += 1
-
         parsedLayouts.append(assetLayout)
-
     return parsedLayouts
 
 def getLayoutLinkRefs(layout, field):
@@ -42,6 +37,7 @@ def getLayoutLinkRefs(layout, field):
     return layout
 
 def updateSelfRefs(selfrefs):
+    print('Updating layouts with self-referential AssetTag fields.')
     existingLayouts = getExistingRecords(ENDPOINT)
     for selfref in selfrefs:
         id = 0
@@ -60,9 +56,10 @@ def updateSelfRefs(selfrefs):
         r = requests.put(url, headers=HEADERS, json=data)
         print(selfref['name'] + ' update status: ' + str(r.status_code) + ': ' + r.reason)
         if r.status_code != 200:
-            APILog(ENDPOINT,selfref['name'],'error',url=url,data=data,response=r)
+            logtype = 'error'
         else:
-            APILog(ENDPOINT,selfref['name'],'info',url=None,data=None,response=r)
+            logtype = 'info'
+        APILog(ENDPOINT,selfref['name'],logtype,url=url,data=data,response=r)
 
 def createlayouts(filepath):
     url = os.path.join(BASE_URL, ENDPOINT)
@@ -72,6 +69,7 @@ def createlayouts(filepath):
     layouts = parseLayouts(layoutsjson)
     selfrefs = []
     existingLayouts = getExistingRecords(ENDPOINT, namesonly=True)
+    print('Writing asset layouts.')
     for layout in layouts:
         if layout['name'] not in existingLayouts:
             fields = layout['fields']
@@ -92,9 +90,10 @@ def createlayouts(filepath):
             r = requests.post(url, headers=HEADERS, json=data)
             print(layout['name'] + ' ' + str(r.status_code) + ' ' + r.reason)
             if r.status_code != 200:
-                APILog(ENDPOINT,layout['name'],'error',url=url,data=data,response=r)
+                logtype = 'error'
             else:
-                APILog(ENDPOINT,layout['name'],'info',url=None,data=None,response=r)
+                logtype = 'info'
+            APILog(ENDPOINT,layout['name'],logtype,url=url,data=data,response=r)
         else:
             print(layout['name'] + ' already exists.')
             APILog(ENDPOINT,layout['name'],'warning')

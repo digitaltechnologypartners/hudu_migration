@@ -21,6 +21,7 @@ def getAssetLayoutAndID(layoutName):
         click.echo('Got an error attempting to get asset layout id. Check the logs.')
 
 def getLocationsLookupTable():
+    print('Getting locations.')
     rateLimiter()
     layoutID,layout = getAssetLayoutAndID('Location')
     data = {
@@ -52,6 +53,7 @@ def getSchema(layout):
     return layoutFieldNames
 
 def checkSchema(layoutFieldNames,assetsDF):
+    print('Checking schema.')
     try:
         assetsDF = assetsDF.drop(['company','name','archived'],axis=1)
     except Exception as e:
@@ -63,6 +65,7 @@ def checkSchema(layoutFieldNames,assetsDF):
         raise Exception("Query does not return a schema that matches the selected asset layout. \nLayout requires: " + str(layoutFieldNames) + "\nBut got: " + str(dfColumnNames))
 
 def cleanAssets(assetsDF,assettype):
+    print('Cleaning assets.')
     assetsJson = []
     leftovers = []
     companies = getExistingRecords('companies',namesonly=True)
@@ -77,6 +80,7 @@ def cleanAssets(assetsDF,assettype):
     return assetsJson,leftovers
 
 def getCompanyIDs():
+    print('Getting company IDs')
     companyIDs = {}
     companies = getExistingRecords('companies')
     for company in companies:
@@ -94,6 +98,7 @@ def getCompanyID(asset,companyIDs):
     return company,companyID,asset
 
 def parseAssetsJson(assetsJson,assetLayoutID,assettype):
+    print('Parsing assets.')
     parsedAssets = []
     if assettype != 'Location':
         locationsLookupTable = getLocationsLookupTable()
@@ -127,12 +132,13 @@ def createAsset(asset,assettype,companyIDs):
         r = requests.post(url,headers=HEADERS,json=data)
         print(assettype + ' asset: '+ asset['name'] + ' for company ' + company + ': ' + str(r.status_code) + ' ' + r.reason)
         if r.status_code != 200:
-            APILog(assettype + ' asset',asset['name'] + ' for company ' + company,'error',url=url,data=data,response=r)
+            logtype = 'error'
         else:
-            APILog(assettype + ' asset',asset['name'] + ' for company ' + company,'info',url=None,data=data,response=r)
+            logtype = 'info'
             if archival == 'Yes':
                 assetId = r.json()['asset']['id']
                 archiveAsset(assetId,companyID)
+        APILog(assettype + ' asset',asset['name'] + ' for company ' + company,logtype,url=url,data=data,response=r)
 
 def archiveAsset(assetId,companyId):
     rateLimiter()
@@ -141,9 +147,10 @@ def archiveAsset(assetId,companyId):
     r = requests.put(url,headers=HEADERS)
     data = {"asset":assetId,"company":companyId}
     if r.status_code != 200:
-        APILog('Archival of asset',str(assetId) + ' for company' + str(companyId),'error',url=url,data=data,response=r)
+        logtype = 'error'        
     else:
-        APILog('Archival of asset',str(assetId) + ' for company' + str(companyId),'info',url=None,data=None,response=r)
+        logtype = 'info'
+    APILog('Archival of asset',str(assetId) + ' for company' + str(companyId),logtype,url=url,data=data,response=r)
 
 def createAssets(layoutId,layout,assettype,query):
     assetsDF = getDf(query)
@@ -153,5 +160,6 @@ def createAssets(layoutId,layout,assettype,query):
     writeLeftovers(leftovers,assettype)
     companyIDs = getCompanyIDs()
     parsedAssets = parseAssetsJson(assetsJson,layoutId,assettype)
+    print('Writing assets.')
     for asset in parsedAssets:
         createAsset(asset,assettype,companyIDs)

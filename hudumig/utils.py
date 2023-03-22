@@ -5,7 +5,7 @@ import pandas as pd
 from sqlalchemy import create_engine,text
 from ratelimit import limits, sleep_and_retry
 import traceback
-from hudumig.settings import EXPORT_CON_STR,MANG_DB_CON_STR,LEFTOVERS_DB_CON_STR,BASE_URL,HEADERS,MAX_CALLS,MINUTE
+from hudumig.settings import EXPORT_CON_STR,LEFTOVERS_DB_CON_STR,BASE_URL,HEADERS,MAX_CALLS,MINUTE,VERBOSE_LOGS
 
 def getResponseRequestType(response):
     type = str(response.request)
@@ -17,13 +17,16 @@ def APILog(endpoint, entityname, logtype, url=None, data=None, response=None):
         errorContent = json.dumps(response.json(), indent=4)
     except:
         errorContent = response.text
-    
+    if VERBOSE_LOGS == 'True':
+        verbose = '\n' + url + '\n' + json.dumps(data, indent=4) + '\n' + errorContent
+    else:
+        verbose = ''
     if logtype == 'error':
-        logging.error(endpoint + ': ' + entityname + ':' + getResponseRequestType(response) + ' failed: ' + str(response.status_code) + ': ' + response.reason + '\n' + url + '\n' + json.dumps(data, indent=4) + '\n' + errorContent)
+        logging.error(endpoint + ': ' + entityname + ':' + getResponseRequestType(response) + ' failed: ' + str(response.status_code) + ': ' + response.reason + verbose)
     elif logtype == 'warning':
         logging.warning(endpoint + ': ' + entityname + ': already exists. No HTTP request was made.')
     elif logtype == 'info':
-        logging.info(endpoint + ': ' + entityname + ':' + getResponseRequestType(response) + ' succeeded: ' + str(response.status_code) + ': ' + response.reason + json.dumps(data, indent=4) + '\n' + errorContent)
+        logging.info(endpoint + ': ' + entityname + ':' + getResponseRequestType(response) + ' succeeded: ' + str(response.status_code) + ': ' + response.reason + verbose)
 
 def getErrorClass(error):
     eClass = str(error.__class__)
@@ -31,26 +34,22 @@ def getErrorClass(error):
     return eClass
 
 def stackLog(error,action):
-    logging.error(action + ' got: ' + getErrorClass(error) + ': ' + str(error) + '\n' + traceback.format_exc())
+    if VERBOSE_LOGS == 'True':
+        verbose = '\n' + traceback.format_exc()
+    else: verbose = ''
+    logging.error(action + ' got: ' + getErrorClass(error) + ': ' + str(error) + verbose)
 
 @sleep_and_retry
 @limits(calls=MAX_CALLS, period=MINUTE)
 def rateLimiter():
     pass
 
-def getExportDB():
-    engine = create_engine(EXPORT_CON_STR)
-    con = engine.connect().execution_options(isolation_level="AUTOCOMMIT")
-    return con
-
-def getManageDB():
-    engine = create_engine(MANG_DB_CON_STR)
-    con = engine.connect()
-    return con
-
-def getLeftoversDB():
-    engine = create_engine(LEFTOVERS_DB_CON_STR)
-    con = engine.connect().execution_options(isolation_level="AUTOCOMMIT")
+def getDb(conStr):
+    engine = create_engine(conStr)
+    if conStr in [EXPORT_CON_STR,LEFTOVERS_DB_CON_STR]:
+        con = engine.connect().execution_options(isolation_level="AUTOCOMMIT")
+    else:
+        con = engine.connect()
     return con
 
 def getQuery(sqlFile):
@@ -58,14 +57,16 @@ def getQuery(sqlFile):
         query = text(file.read())
     return query
 
-def getDf(query):
-    connection = getExportDB()
+def getDf(query,conStr):
+    print('Querying database.')
+    connection = getDb(conStr)
     query = getQuery(query)
     df = pd.read_sql(query,con=connection)
     return df
 
 def writeLeftovers(jsonObj,tablename,flatten=False):
-    connection = getLeftoversDB()
+    print('Writing leftover data items to leftovers db.')
+    connection = getDb(LEFTOVERS_DB_CON_STR)
     tablename = tablename.lower()
     tablename = tablename.replace(" ","_")
     df = pd.read_json(json.dumps(jsonObj))
@@ -74,6 +75,7 @@ def writeLeftovers(jsonObj,tablename,flatten=False):
     df.to_sql(tablename,con=connection,if_exists='replace',index=False)
 
 def getExistingRecords(endpoint, namesonly=False, data=None):
+    print('Getting existing records for ' + endpoint.rtrim('&'))
     if not endpoint.endswith('&'):
         endpointpage = endpoint + '?page='
     else:
@@ -109,6 +111,7 @@ def getExistingRecords(endpoint, namesonly=False, data=None):
     return records
 
 def writeJson(jsonData, file):
+    print('Writing json output to ' + file)
     obj = json.dumps(jsonData, indent=4)
     with open(file, "w") as outfile:
         outfile.write(obj)
