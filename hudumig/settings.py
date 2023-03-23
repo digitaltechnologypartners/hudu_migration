@@ -18,7 +18,6 @@ API_KEY = cfg['API']['api_key']
 BASE_URL = cfg['API']['base_url']
 
 ### Database
-
 EXPORT_CON_STR = URL(
     'mysql+pymysql',
     username = cfg['DATABASE']['mdb_uname'],
