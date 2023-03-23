@@ -1,8 +1,8 @@
 import os
 import pandas as pd
 from configparser import ConfigParser
-from hudumig.utils import getExportDB
-from hudumig.settings import DEFAULT_CONFIG_PATH
+from hudumig.utils import getDb
+from hudumig.settings import DEFAULT_CONFIG_PATH,EXPORT_CON_STR
 
 cfg = ConfigParser()
 cfg.read(DEFAULT_CONFIG_PATH)
@@ -12,7 +12,7 @@ def loadExpDb(path):
         if file.endswith(".csv"):
             df = pd.read_csv(open(path + '/' + file))
             tablename = os.path.splitext(file)[0]
-            connection = getExportDB()
+            connection = getDb(EXPORT_CON_STR)
             df.to_sql(tablename,con=connection,if_exists='replace',index=False)
             print(file + ' OK')
 

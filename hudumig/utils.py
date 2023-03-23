@@ -5,7 +5,7 @@ import pandas as pd
 from sqlalchemy import create_engine,text
 from ratelimit import limits, sleep_and_retry
 import traceback
-from hudumig.settings import EXPORT_CON_STR,LEFTOVERS_DB_CON_STR,BASE_URL,HEADERS,MAX_CALLS,MINUTE,VERBOSE_LOGS
+from hudumig.settings import EXPORT_CON_STR,LEFTOVERS_DB_CON_STR,BASE_URL,HEADERS,MAX_CALLS,MINUTE,VERBOSE_LOGS,WRITE_LEFTOVERS
 
 def getResponseRequestType(response):
     type = str(response.request)
@@ -36,7 +36,8 @@ def getErrorClass(error):
 def stackLog(error,action):
     if VERBOSE_LOGS == 'True':
         verbose = '\n' + traceback.format_exc()
-    else: verbose = ''
+    else: 
+        verbose = ''
     logging.error(action + ' got: ' + getErrorClass(error) + ': ' + str(error) + verbose)
 
 @sleep_and_retry
@@ -65,17 +66,18 @@ def getDf(query,conStr):
     return df
 
 def writeLeftovers(jsonObj,tablename,flatten=False):
-    print('Writing leftover data items to leftovers db.')
-    connection = getDb(LEFTOVERS_DB_CON_STR)
-    tablename = tablename.lower()
-    tablename = tablename.replace(" ","_")
-    df = pd.read_json(json.dumps(jsonObj))
-    if flatten:
-        df = pd.json_normalize(df)
-    df.to_sql(tablename,con=connection,if_exists='replace',index=False)
+    if WRITE_LEFTOVERS == 'True':
+        print('Writing leftover data items to leftovers db.')
+        connection = getDb(LEFTOVERS_DB_CON_STR)
+        tablename = tablename.lower()
+        tablename = tablename.replace(" ","_")
+        df = pd.read_json(json.dumps(jsonObj))
+        if flatten:
+            df = pd.json_normalize(df)
+        df.to_sql(tablename,con=connection,if_exists='replace',index=False)
 
 def getExistingRecords(endpoint, namesonly=False, data=None):
-    print('Getting existing records for ' + endpoint.rtrim('&'))
+    print('Getting existing records for ' + endpoint.rstrip('&'))
     if not endpoint.endswith('&'):
         endpointpage = endpoint + '?page='
     else:

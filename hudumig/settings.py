@@ -24,24 +24,27 @@ EXPORT_CON_STR = URL(
     username = cfg['DATABASE']['mdb_uname'],
     password = cfg['DATABASE']['mdb_pw'],
     host = cfg['DATABASE']['mdb_host'],
-    port = cfg['DATABASE']['mdb_port'],
-    database = cfg['DATABASE']['mdb_schema']
+    port = int(cfg['DATABASE']['mdb_port']),
+    database = cfg['DATABASE']['mdb_schema'],
+    query = {}
 )
 LEFTOVERS_DB_CON_STR = URL(
     'mysql+pymysql',
     username = cfg['DATABASE']['ldb_uname'],
     password = cfg['DATABASE']['ldb_pw'],
     host = cfg['DATABASE']['ldb_host'],
-    port = cfg['DATABASE']['ldb_port'],
-    database = cfg['DATABASE']['ldb_schema']
+    port = int(cfg['DATABASE']['ldb_port']),
+    database = cfg['DATABASE']['ldb_schema'],
+    query = {}
 )
 MANG_DB_CON_STR = URL(
     'mssql+pymssql',
     username = cfg['DATABASE']['mng_uname'],
     password = cfg['DATABASE']['mng_pw'],
     host = cfg['DATABASE']['mng_host'],
-    port = cfg['DATABASE']['mng_port'],
-    database = cfg['DATABASE']['mng_schema']
+    port = int(cfg['DATABASE']['mng_port']),
+    database = cfg['DATABASE']['mng_schema'],
+    query = {}
 )
 
 ### Asset Layouts
