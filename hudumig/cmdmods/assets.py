@@ -157,7 +157,8 @@ def createAssets(layoutId,layout,assettype,query):
     schema = getSchema(layout)
     checkSchema(schema,assetsDF)
     assetsJson,leftovers = cleanAssets(assetsDF,assettype)
-    writeLeftovers(leftovers,assettype)
+    if leftovers:
+        writeLeftovers(leftovers,assettype)
     companyIDs = getCompanyIDs()
     parsedAssets = parseAssetsJson(assetsJson,layoutId,assettype)
     print('Writing assets.')
