@@ -627,8 +627,7 @@
             ],
             "common_fields":[
                 "Status",
-                "Location",
-                "Interfaces"
+                "Location"
             ]
         }
     ]
