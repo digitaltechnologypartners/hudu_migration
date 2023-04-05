@@ -11,11 +11,10 @@ select
     ,case when 
     	configuration_type in ("Virtual Machine","Vm") then true
     	else false end as isVM
-    ,case when (
-		name is like '%VM Host' then true
-		or name is like '%HyperV%' then true
-		)
-	else false end as "isHypervisor"
+    ,case 
+	    when name like '%VM Host%' or name like '%HyperV%' then true
+		else false 
+	end as "isHypervisor"
     ,"" as "VM Host"
 FROM   
 	configurations
