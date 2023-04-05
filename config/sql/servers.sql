@@ -16,7 +16,7 @@ select
 		else false 
 	end as "isHypervisor"
     ,"" as "VM Host"
-	,
+	,configuration_interfaces as Interfaces
 FROM   
 	configurations
 where
