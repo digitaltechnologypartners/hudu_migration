@@ -4,7 +4,7 @@ select
 	,name
 	,organization as company
 	,manufacturer as make
-    ,Location
+    ,location
 	,serial_number as Serial
     ,primary_ip as ip
     ,model as model
