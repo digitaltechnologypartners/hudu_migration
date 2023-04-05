@@ -475,8 +475,7 @@
             "common_fields":[
                 "Status",
                 "Location",
-                "Model",
-                "Interfaces"
+                "Model"
             ]
         },
         {
@@ -504,8 +503,7 @@
                 "Location",
                 "Model",
                 "IP",
-                "Serial",
-                "Interfaces"
+                "Serial"
             ]
         },
         {
@@ -582,8 +580,7 @@
             ],
             "common_fields":[
                 "Status",
-                "Location",
-                "Interfaces"
+                "Location"
             ]
         },
         {
