@@ -4,7 +4,7 @@ import json
 import requests
 import logging
 from hudumig.utils import getExistingRecords,rateLimiter,APILog,stackLog,writeLeftovers,getDf
-from hudumig.settings import BASE_URL,HEADERS
+from hudumig.settings import BASE_URL,HEADERS,EXPORT_CON_STR
 
 def getAssetLayoutAndID(layoutName):
     layoutID = None
@@ -153,7 +153,7 @@ def archiveAsset(assetId,companyId):
     APILog('Archival of asset',str(assetId) + ' for company' + str(companyId),logtype,url=url,data=data,response=r)
 
 def createAssets(layoutId,layout,assettype,query):
-    assetsDF = getDf(query)
+    assetsDF = getDf(query,EXPORT_CON_STR)
     schema = getSchema(layout)
     checkSchema(schema,assetsDF)
     assetsJson,leftovers = cleanAssets(assetsDF,assettype)

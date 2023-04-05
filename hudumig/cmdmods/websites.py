@@ -1,6 +1,6 @@
 import requests
 import os
-from hudumig.settings import HEADERS,BASE_URL
+from hudumig.settings import HEADERS,BASE_URL,EXPORT_CON_STR
 from hudumig.utils import getDf,writeLeftovers,rateLimiter,APILog,getExistingRecords
 from hudumig.cmdmods.assets import getCompanyIDs,getCompanyID,cleanAssets
 
@@ -64,7 +64,7 @@ def createWebsite(website,companyIDs):
 
 def createWebsites(query):
     companyIDs = getCompanyIDs()
-    websitesDf = getDf(query)
+    websitesDf = getDf(query,EXPORT_CON_STR)
     websitesJson,leftovers = cleanAssets(websitesDf,ENDPOINT)
     companiesWebsites = getCompaniesWebsites()
     websitesJson = xrefImportandExisting(websitesJson,companiesWebsites)
