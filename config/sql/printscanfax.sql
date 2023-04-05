@@ -8,5 +8,6 @@ select archived
 	,serial_number as serial
 	,primary_ip as IP
 	,'false' as isManagedbyPrinterCompany
+    ,configuration_interfaces as interfaces
 from configurations conf
 where configuration_type in ('Printer','Scanner','FAX')
