@@ -470,6 +470,11 @@
                     "label":"isLegacy",
                     "field_type":"CheckBox",
                     "show_in_list":"true"
+                },
+                {
+                    "label":"License Key",
+                    "field_type":"RichText",
+                    "show_in_list":"true"
                 }
             ],
             "common_fields":[
