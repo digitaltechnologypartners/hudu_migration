@@ -88,6 +88,39 @@
             "common_fields":[]
         },
         {
+            "name":"Other",
+            "icon":"fas fa-ghost",
+            "fields":[
+                {
+                    "label":"Make",
+                    "field_type":"Text",
+                    "show_in_list":"true"
+                },
+                {
+                    "label":"Hostname",
+                    "field_type":"Text",
+                    "show_in_list":"true"
+                },
+                {   
+                    "label":"MAC Address",
+                    "field_type":"Text",
+                    "show_in_list":"false"
+                },
+                {
+                    "label":"Notes",
+                    "field_type":"RichText",
+                    "show_in_list":"false"
+                }
+            ],
+            "common_fields":[
+                "Status",
+                "Location",
+                "Serial",
+                "IP",
+                "Model"
+            ]
+        },
+        {
             "name":"Server",
             "icon":"far fa-server",
             "fields":[
@@ -115,7 +148,7 @@
             "fields":[
                 {
                     "label":"Make",
-                    "field_type":"Dropdown",
+                    "field_type":"Text",
                     "options": "Dell\r\nHP\r\nLenovo\r\nMSI\r\nOther/Whitebox",
                     "show_in_list":"true"
                 },
