@@ -550,6 +550,11 @@
                     "field_type":"Dropdown",
                     "options": "Coax\r\nCopper Pair\r\nFiber\r\nOther",
                     "show_in_list":"true"
+                },
+                {
+                    "label":"IP Addresses",
+                    "field_type":"RichText",
+                    "show_in_list":"false"
                 }
             ],
             "common_fields":[
