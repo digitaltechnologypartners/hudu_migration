@@ -112,9 +112,9 @@ def parseAssetsJson(assetsJson,assetLayoutID,assettype):
         companyName = record.pop('company')
         record.pop('name')
         record.pop('archived')
-        if 'Location' in record:
-            location = getLocation(locationsLookupTable,record['Location'],companyName)
-            record['Location'] = location
+        if 'location' in record:
+            location = getLocation(locationsLookupTable,record['location'],companyName)
+            record['location'] = location
         asset['custom_fields'].append(record)
         parsedAssets.append(asset)
     return parsedAssets
@@ -157,7 +157,8 @@ def createAssets(layoutId,layout,assettype,query):
     schema = getSchema(layout)
     checkSchema(schema,assetsDF)
     assetsJson,leftovers = cleanAssets(assetsDF,assettype)
-    writeLeftovers(leftovers,assettype)
+    if leftovers:
+        writeLeftovers(leftovers,assettype)
     companyIDs = getCompanyIDs()
     parsedAssets = parseAssetsJson(assetsJson,layoutId,assettype)
     print('Writing assets.')

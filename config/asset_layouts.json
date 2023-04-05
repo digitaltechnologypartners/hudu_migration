@@ -51,6 +51,11 @@
             "field_type":"Dropdown",
             "options":"Active\r\nInactive\r\nProvisioning\r\nReserved",
             "show_in_list":"true"
+        },
+        {
+            "label":"Interfaces",
+            "field_type":"RichText",
+            "show_in_list":"false"
         }
     ],
     "asset_layouts":[
@@ -88,6 +93,40 @@
             "common_fields":[]
         },
         {
+            "name":"Other",
+            "icon":"fas fa-ghost",
+            "fields":[
+                {
+                    "label":"Make",
+                    "field_type":"Text",
+                    "show_in_list":"true"
+                },
+                {
+                    "label":"Hostname",
+                    "field_type":"Text",
+                    "show_in_list":"true"
+                },
+                {   
+                    "label":"MAC Address",
+                    "field_type":"Text",
+                    "show_in_list":"false"
+                },
+                {
+                    "label":"Notes",
+                    "field_type":"RichText",
+                    "show_in_list":"false"
+                }
+            ],
+            "common_fields":[
+                "Status",
+                "Location",
+                "Serial",
+                "IP",
+                "Model",
+                "Interfaces"
+            ]
+        },
+        {
             "name":"Server",
             "icon":"far fa-server",
             "fields":[
@@ -106,7 +145,8 @@
                 "Model",
                 "isVM",
                 "isHypervisor",
-                "VM Host"
+                "VM Host",
+                "Interfaces"
             ]
         },
         {
@@ -115,7 +155,7 @@
             "fields":[
                 {
                     "label":"Make",
-                    "field_type":"Dropdown",
+                    "field_type":"Text",
                     "options": "Dell\r\nHP\r\nLenovo\r\nMSI\r\nOther/Whitebox",
                     "show_in_list":"true"
                 },
@@ -132,7 +172,8 @@
                 "IP",
                 "Model",
                 "isVM",
-                "VM Host"
+                "VM Host",
+                "Interfaces"
             ]
         },
         {
@@ -153,7 +194,8 @@
                 "IP",
                 "Model",
                 "isVM",
-                "VM Host"
+                "VM Host",
+                "Interfaces"
             ]
         },
         {
@@ -174,7 +216,8 @@
                 "IP",
                 "Model",
                 "isPOE",
-                "isManaged"
+                "isManaged",
+                "Interfaces"
             ]
         },
         {
@@ -198,7 +241,8 @@
                 "Location",
                 "Serial",
                 "IP",
-                "Model"
+                "Model",
+                "Interfaces"
             ]
         },
         {
@@ -222,7 +266,8 @@
                 "Location",
                 "Serial",
                 "IP",
-                "Model"
+                "Model",
+                "Interfaces"
             ]
         },
         {
@@ -257,7 +302,8 @@
                 "Location",
                 "Serial",
                 "IP",
-                "Model"
+                "Model",
+                "Interfaces"
             ]
         },
         {
@@ -290,7 +336,8 @@
                 "Location",
                 "Serial",
                 "IP",
-                "Model"
+                "Model",
+                "Interfaces"
             ]
         },
         {
@@ -310,7 +357,8 @@
             ],
             "common_fields":[
                 "Status",
-                "Location"
+                "Location",
+                "Interfaces"
             ]
         },
         {
@@ -340,7 +388,8 @@
             ],
             "common_fields":[
                 "Status",
-                "Location"
+                "Location",
+                "Interfaces"
             ]
         },
         {
@@ -369,7 +418,8 @@
                 "Location",
                 "Serial",
                 "IP",
-                "Model"
+                "Model",
+                "Interfaces"
             ]
         },
         {
@@ -397,7 +447,8 @@
                 "Location",
                 "Serial",
                 "IP",
-                "Model"
+                "Model",
+                "Interfaces"
             ]
         },
         {
@@ -418,6 +469,11 @@
                 {
                     "label":"isLegacy",
                     "field_type":"CheckBox",
+                    "show_in_list":"true"
+                },
+                {
+                    "label":"License Key",
+                    "field_type":"RichText",
                     "show_in_list":"true"
                 }
             ],
@@ -494,11 +550,17 @@
                     "field_type":"Dropdown",
                     "options": "Coax\r\nCopper Pair\r\nFiber\r\nOther",
                     "show_in_list":"true"
+                },
+                {
+                    "label":"IP Addresses",
+                    "field_type":"RichText",
+                    "show_in_list":"false"
                 }
             ],
             "common_fields":[
                 "Status",
-                "Location"
+                "Location",
+                "Interfaces"
             ]
         },
         {
