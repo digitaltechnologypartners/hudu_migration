@@ -1,6 +1,6 @@
 SELECT 'Office365 Tenant' AS name,
 	organizations.name AS company,
-	'Active' AS configuration_status,
+	'Active' AS status,
 	'No' AS archived,
 	'false' AS has_security_defaults_enabled,
 	'false' AS has_mfa_partially_deployed,
