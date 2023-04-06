@@ -2,7 +2,7 @@ SELECT
 	archived
 	,configuration_status AS status
 	,name
-	,ORGANIZATION AS company
+	,organization AS company
 	,location
 	,serial_number AS serial
 	,primary_ip AS ip
@@ -14,6 +14,7 @@ SELECT
 		when configuration_type LIKE '%Managed Network Switch%'
 			then true
 	END AS isManaged
+	,configuration_interfaces as interfaces
 FROM
 	configurations
 WHERE
