@@ -56,7 +56,13 @@
             "label":"Interfaces",
             "field_type":"RichText",
             "show_in_list":"false"
+        },
+        {
+            "label":"Notes",
+            "field_type":"RichText",
+            "show_in_list":"false"
         }
+
     ],
     "asset_layouts":[
         {
@@ -90,7 +96,9 @@
                     "show_in_list":"true"
                 }
             ],
-            "common_fields":[]
+            "common_fields":[
+                "Notes"
+            ]
         },
         {
             "name":"Other",
@@ -123,7 +131,8 @@
                 "Serial",
                 "IP",
                 "Model",
-                "Interfaces"
+                "Interfaces",
+                "Notes"
             ]
         },
         {
@@ -146,7 +155,8 @@
                 "isVM",
                 "isHypervisor",
                 "VM Host",
-                "Interfaces"
+                "Interfaces",
+                "Notes"
             ]
         },
         {
@@ -173,7 +183,8 @@
                 "Model",
                 "isVM",
                 "VM Host",
-                "Interfaces"
+                "Interfaces",
+                "Notes"
             ]
         },
         {
@@ -195,7 +206,8 @@
                 "Model",
                 "isVM",
                 "VM Host",
-                "Interfaces"
+                "Interfaces",
+                "Notes"
             ]
         },
         {
@@ -217,7 +229,8 @@
                 "Model",
                 "isPOE",
                 "isManaged",
-                "Interfaces"
+                "Interfaces",
+                "Notes"
             ]
         },
         {
@@ -242,7 +255,8 @@
                 "Serial",
                 "IP",
                 "Model",
-                "Interfaces"
+                "Interfaces",
+                "Notes"
             ]
         },
         {
@@ -267,7 +281,8 @@
                 "Serial",
                 "IP",
                 "Model",
-                "Interfaces"
+                "Interfaces",
+                "Notes"
             ]
         },
         {
@@ -303,7 +318,8 @@
                 "Serial",
                 "IP",
                 "Model",
-                "Interfaces"
+                "Interfaces",
+                "Notes"
             ]
         },
         {
@@ -337,7 +353,8 @@
                 "Serial",
                 "IP",
                 "Model",
-                "Interfaces"
+                "Interfaces",
+                "Notes"
             ]
         },
         {
@@ -358,7 +375,8 @@
             "common_fields":[
                 "Status",
                 "Location",
-                "Interfaces"
+                "Interfaces",
+                "Notes"
             ]
         },
         {
@@ -389,7 +407,8 @@
             "common_fields":[
                 "Status",
                 "Location",
-                "Interfaces"
+                "Interfaces",
+                "Notes"
             ]
         },
         {
@@ -419,7 +438,8 @@
                 "Serial",
                 "IP",
                 "Model",
-                "Interfaces"
+                "Interfaces",
+                "Notes"
             ]
         },
         {
@@ -448,7 +468,8 @@
                 "Serial",
                 "IP",
                 "Model",
-                "Interfaces"
+                "Interfaces",
+                "Notes"
             ]
         },
         {
@@ -480,7 +501,8 @@
             "common_fields":[
                 "Status",
                 "Location",
-                "Model"
+                "Model",
+                "Notes"
             ]
         },
         {
@@ -508,7 +530,8 @@
                 "Location",
                 "Model",
                 "IP",
-                "Serial"
+                "Serial",
+                "Notes"
             ]
         },
         {
@@ -560,7 +583,8 @@
             "common_fields":[
                 "Status",
                 "Location",
-                "Interfaces"
+                "Interfaces",
+                "Notes"
             ]
         },
         {
@@ -590,7 +614,8 @@
             ],
             "common_fields":[
                 "Status",
-                "Location"
+                "Location",
+                "Notes"
             ]
         },
         {
@@ -627,7 +652,8 @@
             ],
             "common_fields":[
                 "Status",
-                "Location"
+                "Location",
+                "Notes"
             ]
         }
     ]
