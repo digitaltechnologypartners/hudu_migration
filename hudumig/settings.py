@@ -1,5 +1,6 @@
 from configparser import ConfigParser
 from sqlalchemy.engine.url import URL
+import logging
 
 ### Default location of config.ini
 DEFAULT_CONFIG_PATH = './config/config.ini'
@@ -64,14 +65,28 @@ WEBSITES_OUTPUT = OUTPUT_PATH + cfg['WEBSITES']['websites_output']
 DEFAULT_LOG_FILE = cfg['LOGGING']['default_log_file']
 VERBOSE_LOGS = cfg['LOGGING']['verbose_logs']
 
+ll = cfg['LOGGING']['log_level']
+if ll == 'debug':
+    LOG_LEVEL = 10
+elif ll == 'info':
+    LOG_LEVEL = 20
+elif ll == 'warn' or ll == 'warning':
+    LOG_LEVEL = 30
+elif ll == 'error':
+    LOG_LEVEL = 40
+elif ll == 'critical':
+    LOG_LEVEL = 50
+else:
+    LOG_LEVEL = 30
+
 ### API Call Variables
 HEADERS = {
     'x-api-key':API_KEY
 }
 
 ### Ratelimiter Variables
-MINUTE = 60
-MAX_CALLS = 300
+MINUTE = 65
+MAX_CALLS = 295
 
 ### Write leftovers
 WRITE_LEFTOVERS = cfg['MISC']['write_leftovers']

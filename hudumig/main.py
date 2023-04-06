@@ -1,7 +1,7 @@
 import click
 import logging
 from hudumig.utils import getExistingRecords, writeJson, stackLog
-from hudumig.settings import ASSET_LAYOUTS_JSON,ASSET_LAYOUTS_OUTPUT,COMPANIES_OUTPUT,COMPANIES_QUERY,GLUE_EXPT_PATH,OUTPUT_PATH,SQL_PATH,DEFAULT_LOG_FILE,WEBSITES_OUTPUT,WEBSITES_QUERY
+from hudumig.settings import ASSET_LAYOUTS_JSON,ASSET_LAYOUTS_OUTPUT,COMPANIES_OUTPUT,COMPANIES_QUERY,GLUE_EXPT_PATH,OUTPUT_PATH,SQL_PATH,DEFAULT_LOG_FILE,WEBSITES_OUTPUT,WEBSITES_QUERY,LOG_LEVEL
 from hudumig.cmdmods.layouts import createlayouts
 from hudumig.cmdmods.companies import createCompanies
 from hudumig.cmdmods.assets import createAssets,getAssetLayoutAndID
@@ -9,7 +9,7 @@ from hudumig.cmdmods.config import loadExpDb,updateConfigVars
 from hudumig.cmdmods.websites import createWebsites
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename=DEFAULT_LOG_FILE, filemode='a', level=logging.INFO, format='%(asctime)s : %(levelname)s : %(message)s ', datefmt='%m/%d/%Y %I:%M:%S %p')
+logging.basicConfig(filename=DEFAULT_LOG_FILE, filemode='a', level=LOG_LEVEL, format='%(asctime)s : %(levelname)s : %(message)s ', datefmt='%m/%d/%Y %I:%M:%S %p')
 
 @click.group("cli",chain=True)
 def cli():

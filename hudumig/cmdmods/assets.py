@@ -97,6 +97,19 @@ def getCompanyID(asset,companyIDs):
         logging.warning('company: ' + company + ' not found in Hudu. Asset will be discarded')
     return company,companyID,asset
 
+def cleanInterfaces(interfaces):
+    cleanedInterfaces = ''
+    if interfaces: 
+        interfaces = json.loads(interfaces)
+        for interface in interfaces:
+            cleanedInterfaces += '<p><b>Name: ' + str(interface['name']) + '</b><br>'
+            cleanedInterfaces += 'IP Address: ' + str(interface['ip_address']) + '<br>'
+            cleanedInterfaces += 'Notes: ' + str(interface['notes']) + '<br>'
+            cleanedInterfaces += 'Primary: ' + str(interface['primary']) + '<br>'
+            cleanedInterfaces += 'Mac Address: ' + str(interface['mac_address']) + '<br>'
+            cleanedInterfaces += 'Port: ' + str(interface['port']) + '</p>'
+    return cleanedInterfaces
+
 def parseAssetsJson(assetsJson,assetLayoutID,assettype):
     print('Parsing assets.')
     parsedAssets = []
@@ -115,6 +128,9 @@ def parseAssetsJson(assetsJson,assetLayoutID,assettype):
         if 'location' in record:
             location = getLocation(locationsLookupTable,record['location'],companyName)
             record['location'] = location
+        if 'interfaces' in record:
+            interfaces = cleanInterfaces(record['interfaces'])
+            record['interfaces'] = interfaces
         asset['custom_fields'].append(record)
         parsedAssets.append(asset)
     return parsedAssets
