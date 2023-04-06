@@ -36,5 +36,6 @@ SELECT configurations.name,
 		WHEN (JSON_EXTRACT(configurations.configuration_interfaces, '$[1].ip_address') LIKE '%192.168.10_.%') AND (JSON_EXTRACT(configurations.configuration_interfaces, '$[1].ip_address') NOT LIKE '%192.168.100.%')
 			THEN JSON_EXTRACT(configurations.configuration_interfaces, '$[1].ip_address')
 	END AS natted_ip
+	,notes
 FROM mdb.configurations
 WHERE (configurations.name LIKE '%iDRAC%') OR (configurations.configuration_type LIKE '%iDRAC%');

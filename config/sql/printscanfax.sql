@@ -9,5 +9,6 @@ select archived
 	,primary_ip as IP
 	,'false' as isManagedbyPrinterCompany
     ,configuration_interfaces as interfaces
+	,notes
 from configurations conf
 where configuration_type in ('Printer','Scanner','FAX')

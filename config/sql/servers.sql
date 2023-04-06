@@ -17,6 +17,7 @@ select
 	end as "isHypervisor"
     ,"" as "VM Host"
 	,configuration_interfaces as interfaces
+	,notes
 FROM   
 	configurations
 where

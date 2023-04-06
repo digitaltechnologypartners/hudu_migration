@@ -15,6 +15,7 @@ SELECT
 			then true
 	END AS isManaged
 	,configuration_interfaces as interfaces
+	,notes
 FROM
 	configurations
 WHERE
