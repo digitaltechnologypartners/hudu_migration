@@ -9,4 +9,5 @@ assets -c wap.sql WAP `
 assets -c idracs.sql iDRAC `
 assets -c office365tenant.sql "Office365 Tenant" `
 assets -c switches.sql "Switch" `
-assets -c nas.sql NAS
+assets -c nas.sql NAS `
+assets -c telephony.sql Telephony
