@@ -496,12 +496,44 @@
                     "label":"License Key",
                     "field_type":"RichText",
                     "show_in_list":"true"
+                },
+                {
+                    "label":"Linked Server",
+                    "field_type":"AssetTag",
+                    "linkable_id":"Server",
+                    "show_in_list":"false"
+                },
+                {
+                    "label":"Business Use Case",
+                    "field_type":"Text",
+                    "show_in_list":"false"
+                },
+                {
+                    "label":"User Base",
+                    "field_type":"Text",
+                    "show_in_list":"false"
+                },
+                {
+                    "label":"Linked Workstation",
+                    "field_type":"AssetTag",
+                    "linkable_id":"Workstation",
+                    "show_in_list":"false"  
+
+                },
+                {
+                    "label":"SQL Instance",
+                    "field_type":"Text",
+                    "show_in_list":"false"
+                },
+                {
+                    "label":"Backup Information",
+                    "field_type":"Text",
+                    "show_in_list":"false"
                 }
             ],
             "common_fields":[
                 "Status",
                 "Location",
-                "Model",
                 "Notes"
             ]
         },
