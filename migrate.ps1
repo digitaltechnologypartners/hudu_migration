@@ -12,4 +12,7 @@ assets -c switches.sql "Switch" `
 assets -c nas.sql NAS `
 assets -c telephony.sql Telephony `
 assets -c software.sql Software `
-assets -c router_firewall.sql "Router/Firewall"
+assets -c router_firewall.sql "Router/Firewall" `
+assets -c surveillancesystem.sql "Surveillance System" `
+assets -c computer.sql Computer `
+assets -c other.sql Other
