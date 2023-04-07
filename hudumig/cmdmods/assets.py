@@ -146,7 +146,7 @@ def createAsset(asset,assettype,companyIDs):
             "asset":asset
         }
         r = requests.post(url,headers=HEADERS,json=data)
-        print(assettype + ' asset: '+ asset['name'] + ' for company ' + company + ': ' + str(r.status_code) + ' ' + r.reason)
+        print(assettype + ' asset: '+ str(asset['name']) + ' for company ' + company + ': ' + str(r.status_code) + ' ' + r.reason)
         if r.status_code != 200:
             logtype = 'error'
         else:
@@ -154,7 +154,7 @@ def createAsset(asset,assettype,companyIDs):
             if archival == 'Yes':
                 assetId = r.json()['asset']['id']
                 archiveAsset(assetId,companyID)
-        APILog(assettype + ' asset',asset['name'] + ' for company ' + company,logtype,url=url,data=data,response=r)
+        APILog(assettype + ' asset',str(asset['name']) + ' for company ' + company,logtype,url=url,data=data,response=r)
 
 def archiveAsset(assetId,companyId):
     rateLimiter()
