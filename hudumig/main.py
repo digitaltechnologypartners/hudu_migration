@@ -162,7 +162,6 @@ def websites(create,output,query,outputfile):
 @click.option('-o','--output', is_flag=True, help='Output existing passwords in Json to [OUTPUTFILE] (occurs after creation if called in same command).')
 @click.option('-q','--query', default=PASSWORDS_QUERY, show_default=True, help='Declare file from which to read passwords to write to hudu.')
 @click.option('-f','--outputfile', default=PASSWORDS_OUTPUT, show_default=True, help='Declare file to output existing passwords to.')
-@cli.command()
 def passwords(create,output,query,outputfile):
     """Create passwords and/or output existing passwords to a json file."""
     endpoint = 'asset_passwords'
