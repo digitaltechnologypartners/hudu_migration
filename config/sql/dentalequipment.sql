@@ -10,7 +10,8 @@ SELECT
 	model,
 	serial_number,
 	'' AS vendor_info,
-	CONCAT(notes, '\n', configuration_interfaces) AS notes
+	notes,
+    configuration_interfaces as interfaces
 	
 	
 FROM mdb.configurations
