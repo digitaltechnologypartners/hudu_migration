@@ -1,0 +1,2 @@
+def createPasswords(query):
+    pass

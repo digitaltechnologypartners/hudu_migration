@@ -6,20 +6,15 @@ select
 	,organization as company
 	,manufacturer as make
     ,location
+	,case when (name like '%laptop%' or configuration_type like 'Laptop') then true else false end as islaptop
 	,serial_number as Serial
     ,primary_ip as ip
     ,model as model
-    ,case when 
-    	configuration_type in ("Virtual Machine","Vm") then true
-    	else false end as isVM
-    ,case 
-	    when name like '%VM Host%' or name like '%HyperV%' then true
-		else false 
-	end as "isHypervisor"
-    ,"" as "VM Host"
+    ,'' as isVM
+    ,'' as "VM Host"
 	,configuration_interfaces as interfaces
 	,notes
 FROM   
 	configurations
 where
-	configuration_type in ("Server","Virtual Machine","Vm")
+	configuration_type in ("workstation","laptop")

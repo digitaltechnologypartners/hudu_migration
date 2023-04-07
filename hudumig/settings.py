@@ -1,6 +1,5 @@
 from configparser import ConfigParser
 from sqlalchemy.engine.url import URL
-import logging
 
 ### Default location of config.ini
 DEFAULT_CONFIG_PATH = './config/config.ini'
@@ -60,6 +59,10 @@ EXCLUSIVE_TYPE_BLACKLIST = cfg['COMPANIES']['exclusive_type_blacklist'].split(',
 ### Websites
 WEBSITES_QUERY = SQL_PATH + cfg['WEBSITES']['websites_query']
 WEBSITES_OUTPUT = OUTPUT_PATH + cfg['WEBSITES']['websites_output']
+
+### Passwords
+PASSWORDS_QUERY = SQL_PATH + cfg['PASSWORDS']['passwords_query']
+PASSWORDS_OUTPUT = SQL_PATH + cfg['PASSWORDS']['passwords_output']
 
 ### Logging
 DEFAULT_LOG_FILE = cfg['LOGGING']['default_log_file']

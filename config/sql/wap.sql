@@ -9,5 +9,6 @@ select archived
 	,primary_ip as IP
 	,position as specific_location_in_office
 	,configuration_interfaces as interfaces
+	,notes
 from configurations c
 where configuration_type in ('WAP','Wifi','Access Point')
