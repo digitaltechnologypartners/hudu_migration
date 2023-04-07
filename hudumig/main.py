@@ -1,12 +1,13 @@
 import click
 import logging
 from hudumig.utils import getExistingRecords, writeJson, stackLog
-from hudumig.settings import ASSET_LAYOUTS_JSON,ASSET_LAYOUTS_OUTPUT,COMPANIES_OUTPUT,COMPANIES_QUERY,GLUE_EXPT_PATH,OUTPUT_PATH,SQL_PATH,DEFAULT_LOG_FILE,WEBSITES_OUTPUT,WEBSITES_QUERY,LOG_LEVEL
+from hudumig.settings import ASSET_LAYOUTS_JSON,ASSET_LAYOUTS_OUTPUT,COMPANIES_OUTPUT,COMPANIES_QUERY,GLUE_EXPT_PATH,OUTPUT_PATH,SQL_PATH,DEFAULT_LOG_FILE,WEBSITES_OUTPUT,WEBSITES_QUERY,LOG_LEVEL,PASSWORDS_OUTPUT,PASSWORDS_QUERY
 from hudumig.cmdmods.layouts import createlayouts
 from hudumig.cmdmods.companies import createCompanies
 from hudumig.cmdmods.assets import createAssets,getAssetLayoutAndID
 from hudumig.cmdmods.config import loadExpDb,updateConfigVars
 from hudumig.cmdmods.websites import createWebsites
+from hudumig.cmdmods.passwords import createPasswords
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename=DEFAULT_LOG_FILE, filemode='a', level=LOG_LEVEL, format='%(asctime)s : %(levelname)s : %(message)s ', datefmt='%m/%d/%Y %I:%M:%S %p')
@@ -157,8 +158,31 @@ def websites(create,output,query,outputfile):
         click.echo('No option was selected. Enter "hudumig websites --help" to see available options.')
 
 @cli.command()
-def passwords():
-    click.echo('Passwords functionality not yet created.')
+@click.option('-c','--create', is_flag=True, help='Create passwords from [QUERY].')
+@click.option('-o','--output', is_flag=True, help='Output existing passwords in Json to [OUTPUTFILE] (occurs after creation if called in same command).')
+@click.option('-q','--query', default=PASSWORDS_QUERY, show_default=True, help='Declare file from which to read passwords to write to hudu.')
+@click.option('-f','--outputfile', default=PASSWORDS_OUTPUT, show_default=True, help='Declare file to output existing passwords to.')
+@cli.command()
+def passwords(create,output,query,outputfile):
+    """Create passwords and/or output existing passwords to a json file."""
+    endpoint = 'asset_passwords'
+    if create:
+        try:
+            createPasswords(query)
+            click.echo('Created passwords from ' + query)
+        except Exception as e:
+            stackLog(e,'create passwords')
+            click.echo('Got an error attempting to create passwords. Check the logs.')
+    if output:
+        try:
+            passwords = getExistingRecords(endpoint)
+            writeJson(passwords,outputfile)
+            click.echo('Existing passwords exported to ' + outputfile)
+        except Exception as e:
+            stackLog(e,'output passwords')
+            click.echo('Got an error attempting to output passwords. Check the logs.')
+    if not output and not create:
+        click.echo('No option was selected. Enter "hudumig passwords --help" to see available options.')
 
 @cli.command()
 def attachments():
