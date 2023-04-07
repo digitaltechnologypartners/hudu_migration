@@ -1,3 +1,4 @@
+-- Active: 1680870568771@@172.19.1.10@3306@mdb
 select
 	archived
 	,configuration_status as status
