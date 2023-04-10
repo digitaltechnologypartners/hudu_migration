@@ -17,4 +17,6 @@ assets -c surveillancesystem.sql "Surveillance System" `
 assets -c computer.sql Computer `
 assets -c other.sql Other `
 assets -c ambientaudio.sql "Ambient Audio" `
-assets -c power_management.sql "Power Management"
+assets -c power_management.sql "Power Management" `
+assets -c dentalequipment.sql "Dental Equipment" `
+assets -c isp.sql ISP

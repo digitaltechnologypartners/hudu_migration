@@ -11,12 +11,11 @@ SELECT
 	'' AS account_pin,	
 	`internet-wan`.`IP Address(es)` AS ip_addresses,
 	'' AS notes,
-	'' AS interfaces
+	'' AS interfaces,
+	id as glue_id
 FROM 
 	mdb.`internet-wan`
-	
 UNION ALL
-
 SELECT
 	vendors.`Vendor Name` AS NAME,
 	vendors.organization AS company,
@@ -30,13 +29,11 @@ SELECT
 	'' AS account_pin,	
 	'' AS ip_addresses,
 	vendors.Representative AS notes,
-	'' AS interfaces
-	
+	'' AS interfaces,
+	id as glue_id
 FROM 
 	mdb.vendors
-	
 UNION ALL
-
 SELECT 
 	configurations.name,
 	configurations.organization AS company,
@@ -50,7 +47,7 @@ SELECT
 	''	AS account_pin,
 	configurations.primary_ip AS ip_addresses,
 	configurations.notes,
-	configurations.configuration_interfaces AS interfaces
-	
+	configurations.configuration_interfaces AS interfaces,
+	id as glue_id	
 FROM mdb.configurations
 WHERE configurations.configuration_type LIKE '%Internet Modem%';

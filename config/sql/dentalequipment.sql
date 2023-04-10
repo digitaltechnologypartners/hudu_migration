@@ -11,8 +11,7 @@ SELECT
 	serial_number,
 	'' AS vendor_info,
 	notes,
-    configuration_interfaces as interfaces
-	
-	
+    configuration_interfaces as interfaces,
+	id as glue_id
 FROM mdb.configurations
 WHERE configurations.configuration_type LIKE '%Dental%';

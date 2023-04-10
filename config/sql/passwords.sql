@@ -1,7 +1,7 @@
 select p.organization as company
 	,case when resource_type in ('StructuredData::Row','Configuration') then 'Asset' else null end as passwordable_type
 	,resource_id as glue_id
-	,p.name 
+	,p.name as name
 	,password
 	,url 
 	,username 
