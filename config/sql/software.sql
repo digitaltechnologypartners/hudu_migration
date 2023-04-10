@@ -14,6 +14,7 @@ select archived
 	,null as business_use_case
 	,null as sql_instance
 	,null as backup_information
+	,id as glue_id
 from licensing
 union all
 select archived 
@@ -35,6 +36,7 @@ select archived
 	,null as business_use_case
 	,null as sql_instance
 	,null as backup_information
+	,id as glue_id
 from `pm-imaging-software`
 union all
 select archived
@@ -53,4 +55,5 @@ select archived
 	,null as business_use_case
 	,null as sql_instance
 	,null as backup_information
+	,id as glue_id
 from applications

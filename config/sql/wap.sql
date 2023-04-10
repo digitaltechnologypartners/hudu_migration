@@ -10,5 +10,6 @@ select archived
 	,position as specific_location_in_office
 	,configuration_interfaces as interfaces
 	,notes
+	,id as glue_id
 from configurations c
 where configuration_type in ('WAP','Wifi','Access Point')

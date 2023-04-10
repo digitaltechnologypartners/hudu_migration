@@ -18,6 +18,7 @@ SELECT
 	,'false' AS has_hikconnect_configured
 	,configuration_interfaces AS interfaces
 	,notes
+	,id as glue_id
 FROM
 	configurations
 WHERE

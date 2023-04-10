@@ -12,6 +12,7 @@ select
 	,'' as "Access URL"
     ,model as model
 	,notes
+	,id as glue_id
 FROM   
 	configurations
 where

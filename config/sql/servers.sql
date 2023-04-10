@@ -19,6 +19,7 @@ select
     ,"" as "VM Host"
 	,configuration_interfaces as interfaces
 	,notes
+	,id as glue_id
 FROM   
 	configurations
 where
