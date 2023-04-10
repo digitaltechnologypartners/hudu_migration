@@ -16,4 +16,4 @@ select
 FROM   
 	configurations
 where
-	configuration_type in ("Other")
+	configuration_type in ("Managed Network UPS","Power Distribution Unit")
