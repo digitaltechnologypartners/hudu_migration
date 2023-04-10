@@ -1,5 +1,6 @@
 SELECT 
-	`internet-wan`.Provider AS name,
+	archived,
+	Provider AS name,
 	`internet-wan`.organization AS company,
 	`internet-wan`.`Location(s)` AS location,
 	`internet-wan`.`Router/Firewall` AS cpe_device,
@@ -9,8 +10,8 @@ SELECT
 	`internet-wan`.`Account Number` AS account_number,
 	'' AS device_access_codes,
 	'' AS account_pin,	
-	`internet-wan`.`IP Address(es)` AS ip_addresses,
-	'' AS notes,
+	REGEXP_SUBSTR(REPLACE(`internet-wan`.`IP Address(es)`, 'Â', ''), '((Useable Static IP Address)*|(Sophos IP)|(IP~)|(GW)|(Range)|(Charter IP)|(IP Block)|(Static)|(IP Address)|(IP Range)|(Usable)|(Useable)|(Usable IP)|(WAN)|(Static IP)|(FW)|(IP)|(GW)|(Gateway))*( )*((:)|(~)|( )|(-))*( )*[0-9]{1,3}\\.{1}[0-9]{1,3}\\.{1}[0-9]{1,3}\\.{1}[0-9]{1,3}(./[0-9]{1,3})*') AS ip_addresses,
+	`internet-wan`.`IP Address(es)` AS notes,
 	'' AS interfaces
 FROM 
 	mdb.`internet-wan`
@@ -18,6 +19,7 @@ FROM
 UNION ALL
 
 SELECT
+	archived,
 	vendors.`Vendor Name` AS NAME,
 	vendors.organization AS company,
 	'' AS location,
@@ -38,6 +40,7 @@ FROM
 UNION ALL
 
 SELECT 
+	configurations.archived,
 	configurations.name,
 	configurations.organization AS company,
 	configurations.location,
