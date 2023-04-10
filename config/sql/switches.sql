@@ -16,6 +16,7 @@ SELECT
 	END AS isManaged
 	,configuration_interfaces as interfaces
 	,notes
+	,id as glue_id
 FROM
 	configurations
 WHERE

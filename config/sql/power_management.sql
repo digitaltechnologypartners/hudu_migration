@@ -12,7 +12,8 @@ select
 	,'' as "Access URL"
     ,model as model
 	,notes
+	,id as glue_id
 FROM   
 	configurations
 where
-	configuration_type in ("Other")
+	configuration_type in ("Managed Network UPS","Power Distribution Unit")

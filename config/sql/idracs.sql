@@ -37,5 +37,6 @@ SELECT configurations.name,
 			THEN JSON_EXTRACT(configurations.configuration_interfaces, '$[1].ip_address')
 	END AS natted_ip
 	,notes
+	,id as glue_id
 FROM mdb.configurations
 WHERE (configurations.name LIKE '%iDRAC%') OR (configurations.configuration_type LIKE '%iDRAC%');

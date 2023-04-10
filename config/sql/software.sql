@@ -1,7 +1,7 @@
 select archived 
 	,organization as company
 	,'Active' as status
-	,name 
+	,ifnull(Name,'None') as name
 	,Version as version
 	,Manufacturer as vendor
 	,null as type
@@ -14,12 +14,13 @@ select archived
 	,null as business_use_case
 	,null as sql_instance
 	,null as backup_information
+	,id as glue_id
 from licensing
 union all
 select archived 
 	,organization as company
 	,'Active' as status
-	,Name as name
+	,ifnull(Name,'None') as name
 	,Version as version
 	,License as vendor
 	,null as type
@@ -35,12 +36,13 @@ select archived
 	,null as business_use_case
 	,null as sql_instance
 	,null as backup_information
+	,id as glue_id
 from `pm-imaging-software`
 union all
 select archived
 	,organization as company
 	,'Active' as status
-	,Name as name
+	,ifnull(Name,'None') as name
 	,Version as version
 	,Vendor as vendor
 	,Category as type
@@ -53,4 +55,5 @@ select archived
 	,null as business_use_case
 	,null as sql_instance
 	,null as backup_information
+	,id as glue_id
 from applications

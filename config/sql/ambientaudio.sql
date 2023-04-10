@@ -12,6 +12,7 @@ SELECT
 	,'' AS volume_control_type
 	,configuration_interfaces AS interfaces
 	,notes
+	,id as glue_id
 FROM 
 	configurations
 WHERE

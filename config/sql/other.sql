@@ -13,6 +13,7 @@ select
     ,model as model
 	,configuration_interfaces as interfaces
 	,notes
+	,id as glue_id
 FROM   
 	configurations
 where

@@ -1,6 +1,6 @@
 SELECT 
 	archived,
-	Provider AS name,
+	`internet-wan`.Provider AS name,
 	`internet-wan`.organization AS company,
 	`internet-wan`.`Location(s)` AS location,
 	`internet-wan`.`Router/Firewall` AS cpe_device,
@@ -12,12 +12,11 @@ SELECT
 	'' AS account_pin,	
 	REGEXP_SUBSTR(REPLACE(`internet-wan`.`IP Address(es)`, 'Â', ''), '((Useable Static IP Address)*|(Sophos IP)|(IP~)|(GW)|(Range)|(Charter IP)|(IP Block)|(Static)|(IP Address)|(IP Range)|(Usable)|(Useable)|(Usable IP)|(WAN)|(Static IP)|(FW)|(IP)|(GW)|(Gateway))*( )*((:)|(~)|( )|(-))*( )*[0-9]{1,3}\\.{1}[0-9]{1,3}\\.{1}[0-9]{1,3}\\.{1}[0-9]{1,3}(./[0-9]{1,3})*') AS ip_addresses,
 	`internet-wan`.`IP Address(es)` AS notes,
-	'' AS interfaces
+	'' AS interfaces,
+	id as glue_id
 FROM 
 	mdb.`internet-wan`
-	
 UNION ALL
-
 SELECT
 	archived,
 	vendors.`Vendor Name` AS NAME,
@@ -32,13 +31,11 @@ SELECT
 	'' AS account_pin,	
 	'' AS ip_addresses,
 	vendors.Representative AS notes,
-	'' AS interfaces
-	
+	'' AS interfaces,
+	id as glue_id
 FROM 
 	mdb.vendors
-	
 UNION ALL
-
 SELECT 
 	configurations.archived,
 	configurations.name,
@@ -53,7 +50,7 @@ SELECT
 	''	AS account_pin,
 	configurations.primary_ip AS ip_addresses,
 	configurations.notes,
-	configurations.configuration_interfaces AS interfaces
-	
+	configurations.configuration_interfaces AS interfaces,
+	id as glue_id	
 FROM mdb.configurations
 WHERE configurations.configuration_type LIKE '%Internet Modem%';

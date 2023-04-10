@@ -15,4 +15,9 @@ assets -c software.sql Software `
 assets -c router_firewall.sql "Router/Firewall" `
 assets -c surveillancesystem.sql "Surveillance System" `
 assets -c computer.sql Computer `
-assets -c other.sql Other
+assets -c other.sql Other `
+assets -c ambientaudio.sql "Ambient Audio" `
+assets -c power_management.sql "Power Management" `
+assets -c dentalequipment.sql "Dental Equipment" `
+assets -c isp.sql ISP `
+passwords -c
