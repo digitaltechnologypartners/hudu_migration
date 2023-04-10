@@ -19,4 +19,5 @@ assets -c other.sql Other `
 assets -c ambientaudio.sql "Ambient Audio" `
 assets -c power_management.sql "Power Management" `
 assets -c dentalequipment.sql "Dental Equipment" `
-assets -c isp.sql ISP
+assets -c isp.sql ISP `
+passwords -c

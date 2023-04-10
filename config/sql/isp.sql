@@ -1,4 +1,5 @@
 SELECT 
+	archived,
 	`internet-wan`.Provider AS name,
 	`internet-wan`.organization AS company,
 	`internet-wan`.`Location(s)` AS location,
@@ -17,6 +18,7 @@ FROM
 	mdb.`internet-wan`
 UNION ALL
 SELECT
+	archived,
 	vendors.`Vendor Name` AS NAME,
 	vendors.organization AS company,
 	'' AS location,
@@ -35,6 +37,7 @@ FROM
 	mdb.vendors
 UNION ALL
 SELECT 
+	configurations.archived,
 	configurations.name,
 	configurations.organization AS company,
 	configurations.location,
