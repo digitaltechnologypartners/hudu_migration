@@ -61,6 +61,11 @@
             "label":"Notes",
             "field_type":"RichText",
             "show_in_list":"false"
+        },
+        {
+            "label":"Glue ID",
+            "field_type":"Number",
+            "show_in_list":"false"
         }
 
     ],
@@ -132,7 +137,8 @@
                 "IP",
                 "Model",
                 "Interfaces",
-                "Notes"
+                "Notes",
+                "Glue ID"
             ]
         },
         {
@@ -156,7 +162,8 @@
                 "isHypervisor",
                 "VM Host",
                 "Interfaces",
-                "Notes"
+                "Notes",
+                "Glue ID"
             ]
         },
         {
@@ -184,7 +191,8 @@
                 "isVM",
                 "VM Host",
                 "Interfaces",
-                "Notes"
+                "Notes",
+                "Glue ID"
             ]
         },
         {
@@ -207,7 +215,8 @@
                 "isVM",
                 "VM Host",
                 "Interfaces",
-                "Notes"
+                "Notes",
+                "Glue ID"
             ]
         },
         {
@@ -230,7 +239,8 @@
                 "isPOE",
                 "isManaged",
                 "Interfaces",
-                "Notes"
+                "Notes",
+                "Glue ID"
             ]
         },
         {
@@ -256,7 +266,8 @@
                 "IP",
                 "Model",
                 "Interfaces",
-                "Notes"
+                "Notes",
+                "Glue ID"
             ]
         },
         {
@@ -282,7 +293,8 @@
                 "IP",
                 "Model",
                 "Interfaces",
-                "Notes"
+                "Notes",
+                "Glue ID"
             ]
         },
         {
@@ -319,7 +331,8 @@
                 "IP",
                 "Model",
                 "Interfaces",
-                "Notes"
+                "Notes",
+                "Glue ID"
             ]
         },
         {
@@ -354,7 +367,8 @@
                 "IP",
                 "Model",
                 "Interfaces",
-                "Notes"
+                "Notes",
+                "Glue ID"
             ]
         },
         {
@@ -376,7 +390,8 @@
                 "Status",
                 "Location",
                 "Interfaces",
-                "Notes"
+                "Notes",
+                "Glue ID"
             ]
         },
         {
@@ -408,7 +423,8 @@
                 "Status",
                 "Location",
                 "Interfaces",
-                "Notes"
+                "Notes",
+                "Glue ID"
             ]
         },
         {
@@ -439,7 +455,8 @@
                 "IP",
                 "Model",
                 "Interfaces",
-                "Notes"
+                "Notes",
+                "Glue ID"
             ]
         },
         {
@@ -469,7 +486,8 @@
                 "IP",
                 "Model",
                 "Interfaces",
-                "Notes"
+                "Notes",
+                "Glue ID"
             ]
         },
         {
@@ -534,7 +552,8 @@
             "common_fields":[
                 "Status",
                 "Location",
-                "Notes"
+                "Notes",
+                "Glue ID"
             ]
         },
         {
@@ -563,7 +582,8 @@
                 "Model",
                 "IP",
                 "Serial",
-                "Notes"
+                "Notes",
+                "Glue ID"
             ]
         },
         {
@@ -616,7 +636,8 @@
                 "Status",
                 "Location",
                 "Interfaces",
-                "Notes"
+                "Notes",
+                "Glue ID"
             ]
         },
         {
@@ -685,7 +706,8 @@
             "common_fields":[
                 "Status",
                 "Location",
-                "Notes"
+                "Notes",
+                "Glue ID"
             ]
         }
     ]

@@ -11,6 +11,7 @@ SELECT
 	,'' AS handset_type                                      
 	,'' AS connectivity_method
 	,configuration_interfaces as interfaces         
-	,notes                      
+	,notes
+	,id as glue_id
 FROM configurations                                         
 WHERE configuration_type IN ("PBX","Telephone","3CX Server")

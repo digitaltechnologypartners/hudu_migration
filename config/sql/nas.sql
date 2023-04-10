@@ -11,5 +11,6 @@ select archived
 	,notes
 	,'' as `use_case/description`
 	,'' as capacity
+	,id as glue_id
 from configurations
 where configuration_type like 'NAS'
