@@ -1,7 +1,7 @@
 select archived 
 	,organization as company
 	,'Active' as status
-	,name 
+	,ifnull(Name,'None') as name
 	,Version as version
 	,Manufacturer as vendor
 	,null as type
@@ -20,7 +20,7 @@ union all
 select archived 
 	,organization as company
 	,'Active' as status
-	,Name as name
+	,ifnull(Name,'None') as name
 	,Version as version
 	,License as vendor
 	,null as type
@@ -42,7 +42,7 @@ union all
 select archived
 	,organization as company
 	,'Active' as status
-	,Name as name
+	,ifnull(Name,'None') as name
 	,Version as version
 	,Vendor as vendor
 	,Category as type
