@@ -100,14 +100,20 @@ def getCompanyID(asset,companyIDs):
 def cleanInterfaces(interfaces):
     cleanedInterfaces = ''
     if interfaces: 
+        cleanedInterfaces += '<table class="align-center" style="border-collapse: collapse;" border="1">'
+        cleanedInterfaces += '<thead><tr><th style="text-align:center">Name</th><th>IP Address</th><th>Notes</th><th>Primary</th><th>MAC Address</th><th>Port</th></tr></thead>'
+        cleanedInterfaces += '<tbody>'
         interfaces = json.loads(interfaces)
         for interface in interfaces:
-            cleanedInterfaces += '<p><b>Name: ' + str(interface['name']) + '</b><br>'
-            cleanedInterfaces += 'IP Address: ' + str(interface['ip_address']) + '<br>'
-            cleanedInterfaces += 'Notes: ' + str(interface['notes']) + '<br>'
-            cleanedInterfaces += 'Primary: ' + str(interface['primary']) + '<br>'
-            cleanedInterfaces += 'Mac Address: ' + str(interface['mac_address']) + '<br>'
-            cleanedInterfaces += 'Port: ' + str(interface['port']) + '</p>'
+            cleanedInterfaces += '<tr>'
+            cleanedInterfaces += '<td>' + str(interface['name']) + '</td>'
+            cleanedInterfaces += '<td>' + str(interface['ip_address']) + '</td>'
+            cleanedInterfaces += '<td>' + str(interface['notes']) + '</td>'
+            cleanedInterfaces += '<td>' + str(interface['primary']) + '</td>'
+            cleanedInterfaces += '<td>' + str(interface['mac_address']) + '</td>'
+            cleanedInterfaces += '<td>' + str(interface['port']) + '</td>'
+            cleanedInterfaces += '</tr>'
+        cleanedInterfaces += '</tbody></table>'
     return cleanedInterfaces
 
 def parseAssetsJson(assetsJson,assetLayoutID,assettype):
