@@ -1,5 +1,10 @@
 select p.organization as company
-	,case when resource_type in ('StructuredData::Row','Configuration') then 'Asset' else null end as passwordable_type
+	,case 
+		when resource_type in ('StructuredData::Row','Configuration') 
+			or p.name like '%365%' 
+			or username like '%onmicrosoft.com%'
+			then 'Asset' 
+		else null end as passwordable_type
 	,resource_id as glue_id
 	,p.name as name
 	,password

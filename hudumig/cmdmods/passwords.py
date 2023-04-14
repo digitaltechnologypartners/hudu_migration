@@ -18,7 +18,7 @@ def getAssetsGlueIds():
             assetGlueId = {}
             assetGlueId['id'] = asset['id']
             assetGlueId['company_id'] = asset['company_id']
-            assetGlueId['asset_type'] = asset['assset_type']
+            assetGlueId['asset_type'] = asset['asset_type']
             for field in asset['fields']:
                 if field['label'] == 'Glue ID':
                     assetGlueId['glue_id'] = field['value']
@@ -28,7 +28,7 @@ def getAssetsGlueIds():
     return assetsGlueIds
 
 def checkAsset(asset,gid,cid):
-    if asset['glue_id'] == gid and asset['company_id'] == cid:
+    if asset['glue_id'] == str(int(gid)) and asset['company_id'] == cid:
         return True
     else:
         return False
@@ -52,14 +52,14 @@ def parsePws(pwJson,companyIds,assetsGlueIds):
         ppw['username'] = pw['username']
         ppw['password_type'] = pw['password_type']
         ppw['description'] = pw['description']
-        if pw['glue_id'] is not None:
+        if pw['glue_id'] is not '0':
             linkedAsset = [asset for asset in assetsGlueIds if checkAsset(asset,pw['glue_id'],companyIds[pw['company']])]
             if len(linkedAsset) > 0:
                 ppw['passwordable_id'] = linkedAsset[0]['id']
             else:
                 logging.warn("Couldn't find linked asset for Password " + pw['name'] + ' under company ' + pw['company'] + '.')
-        if not ppw['passwordable_id']:
-            if '365' in pw['name'] or 'onmicrosoft.com' in pw['username']:
+        if 'passwordable_id' not in ppw:
+            if '365' in pw['name'] or 'onmicrosoft.com' in str(pw['username']):
                 o365tenant = [asset for asset in assetsGlueIds if check365(asset,companyIds[pw['company']])]
                 if len(o365tenant) > 0:
                     ppw['passwordable_id'] = o365tenant[0]['id']
