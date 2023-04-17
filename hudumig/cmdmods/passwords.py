@@ -1,4 +1,4 @@
-from hudumig.settings import EXPORT_CON_STR,BASE_URL,HEADERS
+from hudumig.settings import EXPORT_CON_STR,BASE_URL,HEADERS,VERBOSE_LOGS
 from hudumig.utils import getDf,writeLeftovers,getExistingRecords,rateLimiter,APILog
 from hudumig.cmdmods.assets import cleanAssets,getCompanyIDs
 import requests
@@ -27,24 +27,22 @@ def getAssetsGlueIds():
             assetsGlueIds.append(assetGlueId)
     return assetsGlueIds
 
-def checkAsset(asset,gid,cid):
-    if asset['glue_id'] == str(int(gid)) and asset['company_id'] == cid:
-        return True
-    else:
-        return False
-
-def check365(asset,cid):
-    if asset['company_id'] == cid and asset['asset_type'] == 'Office365 tenant':
-        return True
-    else:
-        return False
+def checkAssets(asset,cid,pw):
+    keep = False
+    if asset['company_id'] == cid:
+        if asset['glue_id'] == pw['glue_id']:
+            keep = True
+        elif ('365' in pw['name'] or 'onmicrosoft.com' in str(pw['username'])) and asset['asset_type'] == 'Office365 tenant':
+            keep = True
+    return keep
 
 def parsePws(pwJson,companyIds,assetsGlueIds):
     print('Parsing passwords')
     parsedPws = []
     for pw in pwJson:
+        cid = companyIds[pw['company']]
         ppw = {}
-        ppw['company_id'] = companyIds[pw['company']]
+        ppw['company_id'] = cid
         ppw['passwordable_type'] = pw['passwordable_type']
         ppw['name'] = pw['name']
         ppw['password'] = pw['password']
@@ -52,17 +50,12 @@ def parsePws(pwJson,companyIds,assetsGlueIds):
         ppw['username'] = pw['username']
         ppw['password_type'] = pw['password_type']
         ppw['description'] = pw['description']
-        if pw['glue_id'] is not '0':
-            linkedAsset = [asset for asset in assetsGlueIds if checkAsset(asset,pw['glue_id'],companyIds[pw['company']])]
-            if len(linkedAsset) > 0:
-                ppw['passwordable_id'] = linkedAsset[0]['id']
+        if pw['glue_id'] is not None or ('365' in pw['name'] or 'onmicrosoft.com' in str(pw['username'])):
+            linkedAssets = [asset for asset in assetsGlueIds if asset['company_id'] if checkAssets(asset,cid,pw)]
+            if len(linkedAssets) > 0:
+                ppw['passwordable_id'] = linkedAssets[0]['id']
             else:
                 logging.warn("Couldn't find linked asset for Password " + pw['name'] + ' under company ' + pw['company'] + '.')
-        if 'passwordable_id' not in ppw:
-            if '365' in pw['name'] or 'onmicrosoft.com' in str(pw['username']):
-                o365tenant = [asset for asset in assetsGlueIds if check365(asset,companyIds[pw['company']])]
-                if len(o365tenant) > 0:
-                    ppw['passwordable_id'] = o365tenant[0]['id']
         parsedPws.append(ppw)
     return parsedPws
 

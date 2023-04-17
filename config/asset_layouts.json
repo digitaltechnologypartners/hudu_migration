@@ -64,7 +64,7 @@
         },
         {
             "label":"Glue ID",
-            "field_type":"Text",
+            "field_type":"Number",
             "show_in_list":"false"
         }
 

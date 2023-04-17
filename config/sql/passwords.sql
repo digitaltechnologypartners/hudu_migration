@@ -5,7 +5,7 @@ select p.organization as company
 			or username like '%onmicrosoft.com%'
 			then 'Asset' 
 		else null end as passwordable_type
-	,resource_id as glue_id
+	,convert(resource_id,char) as glue_id
 	,p.name as name
 	,password
 	,url 
@@ -13,5 +13,5 @@ select p.organization as company
 	,password_category as password_type
 	,p.notes as description
 from passwords p
-where resource_type not like 'StructuredData::Cell'
-	or resource_type is null
+where (resource_type not like 'StructuredData::Cell'
+	or resource_type is null)
