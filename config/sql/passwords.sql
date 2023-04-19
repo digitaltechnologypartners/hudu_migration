@@ -5,7 +5,7 @@ select p.organization as company
 			or username like '%onmicrosoft.com%'
 			then 'Asset' 
 		else null end as passwordable_type
-	,convert(resource_id,char) as glue_id
+	,resource_id as glue_id
 	,p.name as name
 	,password
 	,url 

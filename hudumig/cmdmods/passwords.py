@@ -1,10 +1,11 @@
 from hudumig.settings import EXPORT_CON_STR,BASE_URL,HEADERS,VERBOSE_LOGS
-from hudumig.utils import getDf,writeLeftovers,getExistingRecords,rateLimiter,APILog
+from hudumig.utils import getDf,writeLeftovers,getExistingRecords,rateLimiter,APILog,writeJson
 from hudumig.cmdmods.assets import cleanAssets,getCompanyIDs
 import requests
 import os
 from time import sleep
 import logging
+import json
 
 ENDPOINT = 'asset_passwords'
 
@@ -19,22 +20,20 @@ def getAssetsGlueIds():
             assetGlueId['id'] = asset['id']
             assetGlueId['company_id'] = asset['company_id']
             assetGlueId['asset_type'] = asset['asset_type']
+            assetGlueId['glue_id'] = 0
             for field in asset['fields']:
-                if field['label'] == 'Glue ID':
+                if field['label'] == "Glue ID":
                     assetGlueId['glue_id'] = field['value']
-                else:
-                    assetGlueId['glue_id'] = '0'
             assetsGlueIds.append(assetGlueId)
     return assetsGlueIds
 
 def checkAssets(asset,cid,pw):
-    keep = False
     if asset['company_id'] == cid:
-        if asset['glue_id'] == pw['glue_id']:
-            keep = True
-        elif ('365' in pw['name'] or 'onmicrosoft.com' in str(pw['username'])) and asset['asset_type'] == 'Office365 tenant':
-            keep = True
-    return keep
+        if pw['glue_id'] is not None and asset['glue_id'] == int(pw['glue_id']):
+            return True
+        elif asset['asset_type'] == 'Office365 tenant' and ('365' in pw['name'] or 'onmicrosoft.com' in str(pw['username'])):
+            return True
+    return False
 
 def parsePws(pwJson,companyIds,assetsGlueIds):
     print('Parsing passwords')
@@ -51,7 +50,7 @@ def parsePws(pwJson,companyIds,assetsGlueIds):
         ppw['password_type'] = pw['password_type']
         ppw['description'] = pw['description']
         if pw['glue_id'] is not None or ('365' in pw['name'] or 'onmicrosoft.com' in str(pw['username'])):
-            linkedAssets = [asset for asset in assetsGlueIds if asset['company_id'] if checkAssets(asset,cid,pw)]
+            linkedAssets = [asset for asset in assetsGlueIds if checkAssets(asset,cid,pw)]
             if len(linkedAssets) > 0:
                 ppw['passwordable_id'] = linkedAssets[0]['id']
             else:
