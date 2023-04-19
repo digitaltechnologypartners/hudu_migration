@@ -10,7 +10,7 @@ SELECT
 	`internet-wan`.`Account Number` AS account_number,
 	'' AS device_access_codes,
 	'' AS account_pin,	
-	REGEXP_SUBSTR(REPLACE(`internet-wan`.`IP Address(es)`, 'Â', ''), '((Useable Static IP Address)*|(Sophos IP)|(IP~)|(GW)|(Range)|(Charter IP)|(IP Block)|(Static)|(IP Address)|(IP Range)|(Usable)|(Useable)|(Usable IP)|(WAN)|(Static IP)|(FW)|(IP)|(GW)|(Gateway))*( )*((:)|(~)|( )|(-))*( )*[0-9]{1,3}\\.{1}[0-9]{1,3}\\.{1}[0-9]{1,3}\\.{1}[0-9]{1,3}(./[0-9]{1,3})*') AS ip_addresses,
+	REGEXP_SUBSTR(REPLACE(`internet-wan`.`IP Address(es)`, 'Â', ''), '((Useable Static IP Address)*|(Sophos IP)|(IP~)|(GW)|(Range)|(Charter IP)|(IP Block)|(Static)|(IP Address)|(IP Range)|(Usable)|(Useable)|(Usable IP)|(WAN)|(Static IP)|(FW)|(IP)|(GW)|(Gateway)|(DNS))*( )*((:)|(~)|( )|(-))*( )*[0-9]{1,3}\\.{1}[0-9]{1,3}\\.{1}[0-9]{1,3}\\.{1}[0-9]{1,3}(./[0-9]{1,3})*') AS ip_addresses,
 	`internet-wan`.`IP Address(es)` AS notes,
 	'' AS interfaces,
 	id as glue_id
