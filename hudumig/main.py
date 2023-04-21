@@ -182,7 +182,3 @@ def passwords(create,output,query,outputfile):
             click.echo('Got an error attempting to output passwords. Check the logs.')
     if not output and not create:
         click.echo('No option was selected. Enter "hudumig passwords --help" to see available options.')
-
-@cli.command()
-def attachments():
-    click.echo('Attachments functionality not yet created.')
