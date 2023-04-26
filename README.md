@@ -79,6 +79,10 @@ It is important that each query return the schema that is expected by the hudu a
 * If you pass the 'archived' field from glue in the json for an asset it will be placed in the hudu museum.
 
 ## Logging
+Hudumig can log lots of data in order to provide information for troubleshooting. Specify your logging settings in config.ini:
+* `log_level`: Set based on standard python log levels. Hudumig will write 'INFO', 'WARNING', and 'ERROR' logs.
+* `default_log_file`: Specify the file name and path for the log file.
+* `verbose_logs`: True or False. When set to false, logs will each be a single line. When set to true, will include stack trace information and api input and output data.
 
 ## Cross Referencing Companies
 The companies command is capable of pulling data from both the ITGlue export database, and from the connectwise Manage database, and cross referencing them to get data not present in the other one.
@@ -154,3 +158,5 @@ Commands may be chained as below and will be executed synchronously in the order
 hudumig layouts -c companies -cx websites -c assets -c locations.sql Location passwords -c
 ```
 
+### Order of Operations
+You should carefully consider how you order your commands, especially where they rely on data already existing in hudu. You should run asset layouts first, then companies, then websites, then all assets, and finally passwords last. The order in which individual assets are run may also be important depending on how you have set up your migration.
