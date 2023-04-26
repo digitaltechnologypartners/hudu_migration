@@ -1,8 +1,6 @@
 # hudumig
 hudumig is a collection of python scripts combined into a command line application using the Click Framework, designed to facilitate the migration of data from CSV files exported from ITGlue into Hudu via the Hudu API. This was built as a one-time use tool at Digital Technology Partners, but we have published it on github in the hopes that it may help someone else in the future.
 
-Much of it is designed to be agnostic of what data is fed into it by whom, but there are a couple of programming quirks which were specific to our use-case, which will be described below.
-
 ## Major Functions
 * Import CSVs exported from ITGlue to database
 * Create asset layouts, companies, assets, websites, and passwords based on user defined configuration files
@@ -10,7 +8,7 @@ Much of it is designed to be agnostic of what data is fed into it by whom, but t
 
 ## Installation
 1. Make sure you have python 3.11 installed.
-2. Clone the repo to your working folder.
+2. Clone the repo to your working folder on your migration host.
 3. Create a python virtual environment in the same directory as the repo, and activate it.
 4. Install requirements.txt using pip.
 5. Run setup.py to install hudumig as a command within the virtual environment.
@@ -72,8 +70,87 @@ The two `type_blacklist` variables are based on an ITGlue company type which tak
 }
 
 ```
-## `.sql` files
-In order for hudumig to import data to Hudu from the database containing your ITGlue export, you must provide hudumig with `.sql` files that return the data you want to import for each different type of data. Our SQL files have been included in the repo for reference.
+### `.sql` files
+In order for hudumig to import data to Hudu from the database containing your ITGlue export, you must provide hudumig with `.sql` files that return the data you want to import for each different type of data. Our SQL files have been included in the repo for reference. 
 
 It is important that each query return the schema that is expected by the hudu api, so using the api documentation can be helpful here. In addition, each of your asset queries, needs to correspond to an asset layout and return the same schema defined for that layout in `asset_layouts.json`.
+
+* Assets and passwords additionally require the record id of the item from ITGlue to be passed as `glue_id` in order to link passwords to their parent assets.
+* If you pass the 'archived' field from glue in the json for an asset it will be placed in the hudu museum.
+
+## Logging
+
+## Cross Referencing Companies
+The companies command is capable of pulling data from both the ITGlue export database, and from the connectwise Manage database, and cross referencing them to get data not present in the other one.
+* You can use glue as a source (which is the default) and if you wish, cross reference it with manage to get a company's primary website.
+* You can specifiy manage as the source, and if you wish cross reference it with glue to get the Company Alerts and Quick Notes fields.
+
+## Other Items (unique to our company)
+### Assets
+* Expects a 'Location' asset type, and to have locations as the first asset written.
+* Will lookup and parse connected locations when an AssetTag field called 'Location' is included in other assets, and the name of the location is passed. This code could easily be repurposed to do the same for any AssetTag field.
+* If you pass the json for 'Interfaces' found in ITGLue configuration to a RichText field called 'Interfaces' it will parse the json data into an html table.
+### Passwords
+* Will not link passwords to assets with a type named 'Location'.
+* If you have an AssetLayout called 'Office365 tenant', it will link any passwords with name containing the string '365' or a username containing 'onmicrosoft.com' to the Office365 tenant for the given company record.
+
+## The Commands
+The main command is `hudumig`. Each function of the app is executed by running subcommands of `hudumig`, and each subcommand has a few switches which control what action it takes and how it works. 
+
+You can execute any command with `--help` to see the associated help file.
+
+|Command|Switch|Description|
+|---|---|---|
+|config|-c|Modify varibles in the configuration file.|
+||-l|Load the export DB with CSVs found in the ITGlue export folder.|
+||-d|Declare the path in which to look for the export files. Default is set in config.ini.|
+|
+|layouts|-c|Create asset layouts from asset_layouts.json.|
+||-o|Output existing layouts to json. Occurs after creation if executed simultaneously.|
+||-l|Declare json file containing asset layouts. Defaults is set in config.ini|
+||-f|Declare file output command should write to. Defaults is set in config.ini|
+|
+|companies|-c|Create companies from specified source DB based on supplied query.|
+||-s|Specify the source db as either 'glue' or 'manage'. Defaults to 'glue'|
+||-x|If using glue as source, cross reference with manage to pull primary website. If using manage as source, cross reference with glue to pull Company Alerts and Quick notes.|
+||-o|Output existing companies to json. Occurs after creation if executed simultaneously.|
+||-q|Specify a .sql file from which to pull companies. Default set in config.ini|
+||-f|Specify a .json file to output existing companies to. Default set in config.ini|
+|
+|assets|-c|Create assets for specified assettype argument. Must specify query file.|
+||-o|Output existing assets for specified assettype argument to json. Must specify file name. Occurs after creation if executed simultaneously.|
+|
+|websites|-c|Create websites based on specified query.|
+||-o|Output existing websites in json to specified output file. Occurs after creation if executed simultaneously.|
+||-q|Specify a .sql file from which to pull websites. Default set in config.ini.|
+||-f|Specify a .json file to output existing websites to. Default set in config.ini.|
+|
+|passwords|-c|Create passwords based on specified query.|
+||-o|Output existing passwords in json to specified output file. Occurs after creation if executed simultaneously.|
+||-q|Specify a .sql file from which to pull passwords. Default set in config.ini.|
+||-f|Specify a .json file to output existing passwords to. Default set in config.ini.|
+
+
+### Examples
+* Write layouts using default layouts file:  
+`hudumig layouts -c`  
+* Output layouts to non default output file:  
+`hudumig layouts -of /path/layouts.json`  
+* Write companies from glue, but pull extra data from manage:  
+`hudumig companies -cx`  
+* Write companies from manage:  
+`hudumig companies -c -s manage`  
+* Create assets for Location asset type:  
+`hudumig assets -c locations.sql Location`
+* Create assets for Software asset type:    
+`hudumig assets -c applications.sql Software`  
+* Create passwords using non default passwords query:  
+`hudumig passwords -cq /path/somepws.sql`  
+
+### Command chaining:
+Commands may be chained as below and will be executed synchronously in the order they are written. This is useful as you can create a script to provide a shorthand for executing the commands specific to your migration.
+
+```
+hudumig layouts -c companies -cx websites -c assets -c locations.sql Location passwords -c
+```
 
