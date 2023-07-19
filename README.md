@@ -112,22 +112,18 @@ You can execute any command with `--help` to see the associated help file.
 ||-o|Output existing layouts to json. Occurs after creation if executed simultaneously.|
 ||-l|Declare json file containing asset layouts. Defaults is set in config.ini|
 ||-f|Declare file output command should write to. Defaults is set in config.ini|
-|
 |companies|-c|Create companies from specified source DB based on supplied query.|
 ||-s|Specify the source db as either 'glue' or 'manage'. Defaults to 'glue'|
 ||-x|If using glue as source, cross reference with manage to pull primary website. If using manage as source, cross reference with glue to pull Company Alerts and Quick notes.|
 ||-o|Output existing companies to json. Occurs after creation if executed simultaneously.|
 ||-q|Specify a .sql file from which to pull companies. Default set in config.ini|
 ||-f|Specify a .json file to output existing companies to. Default set in config.ini|
-|
 |assets|-c|Create assets for specified assettype argument. Must specify query file.|
 ||-o|Output existing assets for specified assettype argument to json. Must specify file name. Occurs after creation if executed simultaneously.|
-|
 |websites|-c|Create websites based on specified query.|
 ||-o|Output existing websites in json to specified output file. Occurs after creation if executed simultaneously.|
 ||-q|Specify a .sql file from which to pull websites. Default set in config.ini.|
 ||-f|Specify a .json file to output existing websites to. Default set in config.ini.|
-|
 |passwords|-c|Create passwords based on specified query.|
 ||-o|Output existing passwords in json to specified output file. Occurs after creation if executed simultaneously.|
 ||-q|Specify a .sql file from which to pull passwords. Default set in config.ini.|
