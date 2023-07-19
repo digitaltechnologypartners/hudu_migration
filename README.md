@@ -108,7 +108,6 @@ You can execute any command with `--help` to see the associated help file.
 |config|-c|Modify varibles in the configuration file.|
 ||-l|Load the export DB with CSVs found in the ITGlue export folder.|
 ||-d|Declare the path in which to look for the export files. Default is set in config.ini.|
-|
 |layouts|-c|Create asset layouts from asset_layouts.json.|
 ||-o|Output existing layouts to json. Occurs after creation if executed simultaneously.|
 ||-l|Declare json file containing asset layouts. Defaults is set in config.ini|
